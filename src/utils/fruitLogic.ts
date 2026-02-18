@@ -97,8 +97,8 @@ export function withdrawFromFruits(
   const result = [...existingFruits];
 
   while (remaining > 0 && result.length > 0) {
-    // Sort descending by tier
-    result.sort((a, b) => b.tier - a.tier);
+    // Sort ascending by tier — remove lowest value fruits first
+    result.sort((a, b) => a.tier - b.tier);
     const highest = result[0];
 
     if (highest.value <= remaining) {

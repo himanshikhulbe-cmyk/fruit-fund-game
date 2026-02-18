@@ -90,6 +90,11 @@ export default function Dashboard() {
                         <p className="text-xs text-muted-foreground">
                           ₹{goal.current_amount.toLocaleString()} / ₹{goal.target_amount.toLocaleString()}
                         </p>
+                        {goal.deadline && (
+                          <p className="text-xs text-muted-foreground">
+                            🗓️ {new Date(goal.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                          </p>
+                        )}
                       </div>
                       <span className="text-sm font-black text-primary">
                         {Math.round(pct)}%

@@ -10,6 +10,7 @@ export interface Goal {
   current_amount: number;
   icon: string;
   created_at: string;
+  deadline: string | null;
 }
 
 export function useGoals() {
@@ -32,10 +33,10 @@ export function useCreateGoal() {
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async ({ name, target_amount, icon }: { name: string; target_amount: number; icon: string }) => {
+    mutationFn: async ({ name, target_amount, icon, deadline }: { name: string; target_amount: number; icon: string; deadline?: string }) => {
       const { data, error } = await supabase
         .from("goals")
-        .insert({ name, target_amount, icon, user_id: user!.id })
+        .insert({ name, target_amount, icon, user_id: user!.id, ...(deadline ? { deadline } : {}) })
         .select()
         .single();
       if (error) throw error;
