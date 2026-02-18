@@ -4,7 +4,7 @@ export const FRUIT_TIERS = [
   { tier: 2, name: "Strawberry", emoji: "🍓", value: 50, color: "#e84393" },
   { tier: 3, name: "Orange", emoji: "🍊", value: 100, color: "#f39c12" },
   { tier: 4, name: "Mango", emoji: "🥭", value: 200, color: "#fdcb6e" },
-  { tier: 5, name: "Dragon Fruit", emoji: "🐉", value: 400, color: "#a855f7" },
+  { tier: 5, name: "Dragon Fruit", emoji: "🍈", value: 400, color: "#a855f7" },
 ] as const;
 
 export type FruitData = { id: string; goal_id: string; tier: number; value: number };
