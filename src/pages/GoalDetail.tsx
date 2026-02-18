@@ -101,6 +101,11 @@ export default function GoalDetail() {
           <p className="text-primary-foreground/70 text-sm font-semibold">
             Goal: ₹{goal.target_amount.toLocaleString()}
           </p>
+          {goal.deadline && (
+            <p className="text-primary-foreground/60 text-xs font-semibold mt-1">
+              🗓️ Deadline: {new Date(goal.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+            </p>
+          )}
         </div>
       </div>
 
