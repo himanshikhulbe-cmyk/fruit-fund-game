@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { FruitData, depositToFruits, withdrawFromFruits, totalFruitValue } from "@/utils/fruitLogic";
+import { FruitData, depositToFruits, withdrawFromFruits, mergeTwoFruits, totalFruitValue } from "@/utils/fruitLogic";
 
 export function useFruits(goalId: string | undefined) {
   return useQuery({
@@ -24,10 +24,8 @@ export function useDeposit() {
     mutationFn: async ({ goalId, amount, existingFruits }: { goalId: string; amount: number; existingFruits: FruitData[] }) => {
       const newFruits = depositToFruits(existingFruits, amount, goalId);
 
-      // Delete all old fruits for this goal
       await supabase.from("fruits").delete().eq("goal_id", goalId);
 
-      // Insert new fruits
       if (newFruits.length > 0) {
         const { error } = await supabase.from("fruits").insert(
           newFruits.map((f) => ({ goal_id: goalId, tier: f.tier, value: f.value }))
@@ -35,11 +33,35 @@ export function useDeposit() {
         if (error) throw error;
       }
 
-      // Update goal amount
       const newTotal = totalFruitValue(newFruits);
       await supabase.from("goals").update({ current_amount: newTotal }).eq("id", goalId);
 
       return { newFruits, newTotal };
+    },
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ["fruits", vars.goalId] });
+      qc.invalidateQueries({ queryKey: ["goals"] });
+    },
+  });
+}
+
+export function useManualMerge() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ goalId, fruitAId, fruitBId, existingFruits }: { goalId: string; fruitAId: string; fruitBId: string; existingFruits: FruitData[] }) => {
+      const { fruits: newFruits, mergedFruit } = mergeTwoFruits(existingFruits, fruitAId, fruitBId);
+      if (!mergedFruit) throw new Error("Cannot merge these fruits");
+
+      await supabase.from("fruits").delete().eq("goal_id", goalId);
+
+      if (newFruits.length > 0) {
+        const { error } = await supabase.from("fruits").insert(
+          newFruits.map((f) => ({ goal_id: goalId, tier: f.tier, value: f.value }))
+        );
+        if (error) throw error;
+      }
+
+      return { newFruits, mergedFruit };
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["fruits", vars.goalId] });

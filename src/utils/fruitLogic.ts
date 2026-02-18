@@ -46,7 +46,7 @@ export function mergeFruits(fruits: FruitData[]): FruitData[] {
   return result;
 }
 
-// Deposit: convert amount to cherries, then merge
+// Deposit: convert amount to cherries (no auto-merge, user merges manually)
 export function depositToFruits(
   existingFruits: FruitData[],
   amount: number,
@@ -60,8 +60,32 @@ export function depositToFruits(
     value: 25,
   }));
 
-  const allFruits = [...existingFruits, ...newCherries];
-  return mergeFruits(allFruits);
+  return [...existingFruits, ...newCherries];
+}
+
+// Merge two specific same-tier fruits into one higher-tier fruit
+export function mergeTwoFruits(
+  existingFruits: FruitData[],
+  fruitAId: string,
+  fruitBId: string
+): { fruits: FruitData[]; mergedFruit: FruitData | null } {
+  const a = existingFruits.find((f) => f.id === fruitAId);
+  const b = existingFruits.find((f) => f.id === fruitBId);
+
+  if (!a || !b || a.tier !== b.tier || a.tier >= 5) {
+    return { fruits: existingFruits, mergedFruit: null };
+  }
+
+  const nextTier = FRUIT_TIERS.find((ft) => ft.tier === a.tier + 1)!;
+  const mergedFruit: FruitData = {
+    id: crypto.randomUUID(),
+    goal_id: a.goal_id,
+    tier: nextTier.tier,
+    value: nextTier.value,
+  };
+
+  const remaining = existingFruits.filter((f) => f.id !== fruitAId && f.id !== fruitBId);
+  return { fruits: [...remaining, mergedFruit], mergedFruit };
 }
 
 // Withdrawal: remove highest tier first, break if needed
