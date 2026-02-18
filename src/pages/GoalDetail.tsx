@@ -147,6 +147,71 @@ export default function GoalDetail() {
         </motion.div>
       </div>
 
+      {/* Savings Pace */}
+      {goal.deadline && !isComplete && (() => {
+        const now = new Date();
+        const deadlineDate = new Date(goal.deadline);
+        const remaining = goal.target_amount - goal.current_amount;
+        const msLeft = deadlineDate.getTime() - now.getTime();
+        const weeksLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 7));
+        const monthsLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 30.44));
+        const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
+        const perWeek = weeksLeft > 0 ? Math.ceil(remaining / weeksLeft) : remaining;
+        const perMonth = monthsLeft > 0 ? Math.ceil(remaining / monthsLeft) : remaining;
+        const isPastDeadline = msLeft <= 0;
+
+        // Check if on track: calculate expected progress
+        const totalDuration = deadlineDate.getTime() - new Date(goal.created_at).getTime();
+        const elapsed = now.getTime() - new Date(goal.created_at).getTime();
+        const expectedPct = totalDuration > 0 ? Math.min(100, (elapsed / totalDuration) * 100) : 100;
+        const onTrack = pct >= expectedPct - 5; // 5% grace
+
+        return (
+          <div className="px-4 mt-4">
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              className="card-playful p-4"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-foreground">📊 Savings Pace</h3>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                  isPastDeadline
+                    ? "bg-destructive/15 text-destructive"
+                    : onTrack
+                    ? "bg-accent/15 text-accent"
+                    : "bg-chart-4/15 text-chart-4"
+                }`}>
+                  {isPastDeadline ? "⚠️ Overdue" : onTrack ? "✅ On Track" : "⏰ Behind"}
+                </span>
+              </div>
+
+              {isPastDeadline ? (
+                <p className="text-xs text-muted-foreground">
+                  Deadline has passed. ₹{remaining.toLocaleString()} still needed.
+                </p>
+              ) : (
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-lg font-black text-foreground">{daysLeft}</p>
+                    <p className="text-[10px] text-muted-foreground font-semibold">Days Left</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-black text-primary">₹{perWeek.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground font-semibold">Per Week</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-black text-primary">₹{perMonth.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground font-semibold">Per Month</p>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        );
+      })()}
+
       {/* Action Buttons */}
       <div className="px-4 mt-4 grid grid-cols-2 gap-3">
         <motion.button
