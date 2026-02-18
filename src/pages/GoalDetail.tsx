@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useGoals, useDeleteGoal } from "@/hooks/useGoals";
-import { useFruits, useDeposit, useWithdraw } from "@/hooks/useFruits";
+import { useFruits, useDeposit, useWithdraw, useManualMerge } from "@/hooks/useFruits";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FruitGrid from "@/components/FruitGrid";
@@ -15,6 +15,7 @@ export default function GoalDetail() {
   const { data: fruits, isLoading } = useFruits(id);
   const deposit = useDeposit();
   const withdraw = useWithdraw();
+  const manualMerge = useManualMerge();
   const deleteGoal = useDeleteGoal();
 
   const [showDeposit, setShowDeposit] = useState(false);
@@ -63,6 +64,16 @@ export default function GoalDetail() {
     setShowWithdraw(false);
   };
 
+  const handleMerge = async (fruitAId: string, fruitBId: string) => {
+    if (!id || !fruits) return;
+    await manualMerge.mutateAsync({
+      goalId: id,
+      fruitAId,
+      fruitBId,
+      existingFruits: fruits,
+    });
+  };
+
   const handleDelete = async () => {
     if (confirm("Delete this goal? All fruits will be lost.")) {
       await deleteGoal.mutateAsync(goal.id);
@@ -100,7 +111,7 @@ export default function GoalDetail() {
           animate={{ y: 0, opacity: 1 }}
           className="card-playful p-4"
         >
-          <FruitGrid fruits={fruits ?? []} loading={isLoading} />
+          <FruitGrid fruits={fruits ?? []} loading={isLoading} onMerge={handleMerge} merging={manualMerge.isPending} />
         </motion.div>
       </div>
 
@@ -165,7 +176,7 @@ export default function GoalDetail() {
               { emoji: "🍓", val: "₹50" },
               { emoji: "🍊", val: "₹100" },
               { emoji: "🥭", val: "₹200" },
-              { emoji: "🐉", val: "₹400" },
+              { emoji: "🍈", val: "₹400" },
             ].map((f) => (
               <div key={f.emoji} className="text-center">
                 <div className="text-2xl">{f.emoji}</div>
