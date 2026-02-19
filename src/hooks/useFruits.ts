@@ -33,7 +33,9 @@ export function useDeposit() {
         if (error) throw error;
       }
 
-      const newTotal = totalFruitValue(newFruits);
+      // Increment by actual deposit amount, not rounded fruit value
+      const { data: goalData } = await supabase.from("goals").select("current_amount").eq("id", goalId).single();
+      const newTotal = (goalData?.current_amount || 0) + amount;
       await supabase.from("goals").update({ current_amount: newTotal }).eq("id", goalId);
 
       return { newFruits, newTotal };
@@ -85,7 +87,9 @@ export function useWithdraw() {
         if (error) throw error;
       }
 
-      const newTotal = totalFruitValue(newFruits);
+      // Subtract actual withdrawal amount
+      const { data: goalData } = await supabase.from("goals").select("current_amount").eq("id", goalId).single();
+      const newTotal = Math.max(0, (goalData?.current_amount || 0) - amount);
       await supabase.from("goals").update({ current_amount: newTotal }).eq("id", goalId);
 
       return { newFruits, newTotal };
