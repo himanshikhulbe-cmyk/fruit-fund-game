@@ -171,6 +171,7 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
                   classNames={{
                     caption_label: "hidden",
                     caption_dropdowns: "flex gap-2",
+                    nav: "hidden",
                   }}
                   className={cn("p-3 pointer-events-auto")}
                 />
