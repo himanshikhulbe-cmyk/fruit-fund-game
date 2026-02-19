@@ -22,7 +22,7 @@ export default function Dashboard() {
   const [showCreate, setShowCreate] = useState(false);
 
   const totalSavings = goals?.reduce((s, g) => s + g.current_amount, 0) ?? 0;
-  const canCreate = (goals?.length ?? 0) < 3;
+  const canCreate = true;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -61,7 +61,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-foreground">Your Goals</h2>
           <span className="text-xs font-semibold text-muted-foreground">
-            {goals?.length ?? 0}/3 goals
+            {goals?.length ?? 0} goals
           </span>
         </div>
 
