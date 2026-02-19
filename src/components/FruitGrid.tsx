@@ -171,9 +171,6 @@ export default function FruitGrid({ fruits, loading, onMerge, merging }: FruitGr
                 >
                   {info.emoji}
                 </motion.span>
-                <span className="text-[10px] font-bold text-muted-foreground mt-0.5">
-                  ₹{info.value}
-                </span>
               </motion.div>
             );
           })}

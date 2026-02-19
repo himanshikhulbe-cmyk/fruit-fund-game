@@ -167,7 +167,7 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
                   initialFocus
                   captionLayout="dropdown-buttons"
                   fromYear={new Date().getFullYear()}
-                  toYear={new Date().getFullYear() + 10}
+                  toYear={new Date().getFullYear() + 30}
                   classNames={{
                     caption_label: "hidden",
                     caption_dropdowns: "flex gap-2",
