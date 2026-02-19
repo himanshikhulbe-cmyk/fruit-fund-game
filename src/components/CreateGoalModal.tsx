@@ -168,6 +168,10 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
                   captionLayout="dropdown-buttons"
                   fromYear={new Date().getFullYear()}
                   toYear={new Date().getFullYear() + 10}
+                  classNames={{
+                    caption_label: "hidden",
+                    caption_dropdowns: "flex gap-2",
+                  }}
                   className={cn("p-3 pointer-events-auto")}
                 />
               </PopoverContent>
