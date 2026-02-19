@@ -10,18 +10,19 @@ interface WithdrawModalProps {
 
 export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount }: WithdrawModalProps) {
   const [amount, setAmount] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
+  const [step, setStep] = useState<"amount" | "needwant" | "confirm">("amount");
+  const [reason, setReason] = useState<"need" | "want" | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAmountSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const num = parseInt(amount);
     if (num <= 0 || num > maxAmount) return;
+    setStep("needwant");
+  };
 
-    if (!confirmed) {
-      setConfirmed(true);
-      return;
-    }
-    onWithdraw(num);
+  const handleReasonSelect = (r: "need" | "want") => {
+    setReason(r);
+    setStep("confirm");
   };
 
   return (
@@ -46,17 +47,17 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
           Available: ₹{maxAmount.toLocaleString()}
         </p>
 
-        {confirmed ? (
+        {step === "confirm" ? (
           <div className="space-y-4">
             <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-center">
               <p className="text-sm font-bold text-destructive">⚠️ This will downgrade your fruits</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Withdrawing ₹{parseInt(amount).toLocaleString()} will remove or downgrade your highest fruits.
+                Withdrawing ₹{parseInt(amount).toLocaleString()} ({reason === "need" ? "a need" : "a want"}) will remove or downgrade your highest fruits.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setConfirmed(false)}
+                onClick={() => setStep("needwant")}
                 className="py-3 rounded-xl bg-muted text-foreground font-bold text-sm"
               >
                 Cancel
@@ -70,8 +71,37 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
               </button>
             </div>
           </div>
+        ) : step === "needwant" ? (
+          <div className="space-y-3">
+            <p className="text-sm font-bold text-foreground text-center">Is this withdrawal a need or a want?</p>
+            <p className="text-xs text-muted-foreground text-center">Think carefully before spending your savings 💭</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => handleReasonSelect("need")}
+                className="py-4 rounded-xl bg-accent/15 border-2 border-accent/30 text-foreground font-bold text-sm flex flex-col items-center gap-1 hover:border-accent transition-colors"
+              >
+                <span className="text-2xl">✅</span>
+                <span>It's a Need</span>
+                <span className="text-[10px] text-muted-foreground font-semibold">Essential expense</span>
+              </button>
+              <button
+                onClick={() => handleReasonSelect("want")}
+                className="py-4 rounded-xl bg-chart-4/15 border-2 border-chart-4/30 text-foreground font-bold text-sm flex flex-col items-center gap-1 hover:border-chart-4 transition-colors"
+              >
+                <span className="text-2xl">🛍️</span>
+                <span>It's a Want</span>
+                <span className="text-[10px] text-muted-foreground font-semibold">Nice to have</span>
+              </button>
+            </div>
+            <button
+              onClick={() => { setStep("amount"); setReason(null); }}
+              className="w-full py-2 text-xs text-muted-foreground font-semibold"
+            >
+              ← Back
+            </button>
+          </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleAmountSubmit} className="space-y-3">
             <input
               type="number"
               value={amount}
