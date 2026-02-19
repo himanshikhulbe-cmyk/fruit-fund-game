@@ -7,6 +7,7 @@ import FruitGrid from "@/components/FruitGrid";
 import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
 import Confetti from "@/components/Confetti";
+import GoalMilestones from "@/components/GoalMilestones";
 
 export default function GoalDetail() {
   const { id } = useParams<{ id: string }>();
@@ -211,6 +212,9 @@ export default function GoalDetail() {
           </div>
         );
       })()}
+
+      {/* Weekly Milestones */}
+      {goal.deadline && !isComplete && <GoalMilestones goal={goal} />}
 
       {/* Action Buttons */}
       <div className="px-4 mt-4 grid grid-cols-2 gap-3">
