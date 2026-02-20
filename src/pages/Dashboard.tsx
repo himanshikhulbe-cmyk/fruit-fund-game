@@ -70,7 +70,7 @@ export default function Dashboard() {
             <div className="animate-spin text-3xl">🍊</div>
           </div>
         ) : goals && goals.length > 0 ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <AnimatePresence>
               {goals.map((goal, i) => {
                 const pct = goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
@@ -132,7 +132,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="grid grid-cols-2 gap-3 mt-6"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6"
           >
             <div className="card-playful p-4 text-center">
               <p className="text-2xl font-black text-foreground">{goals.length}</p>

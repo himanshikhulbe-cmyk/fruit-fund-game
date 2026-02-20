@@ -44,7 +44,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="max-w-md mx-auto min-h-screen">
+          <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto min-h-screen">
             <Routes>
               <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
               <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
