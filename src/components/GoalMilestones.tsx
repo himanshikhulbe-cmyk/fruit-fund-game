@@ -16,18 +16,23 @@ function buildMilestones(goal: Goal): Milestone[] {
   const end = new Date(goal.deadline);
   const totalMs = end.getTime() - start.getTime();
   const totalWeeks = Math.max(1, Math.ceil(totalMs / (1000 * 60 * 60 * 24 * 7)));
-  const perWeek = Math.ceil(goal.target_amount / totalWeeks);
+  
+  // Distribute remainder across early weeks so cumulative always equals target
+  const base = Math.floor(goal.target_amount / totalWeeks);
+  const remainder = goal.target_amount % totalWeeks;
 
   const milestones: Milestone[] = [];
+  let cumulative = 0;
   for (let i = 0; i < totalWeeks; i++) {
-    const cumulative = Math.min(goal.target_amount, perWeek * (i + 1));
-    const target = i === totalWeeks - 1 ? goal.target_amount - perWeek * i : perWeek;
+    const weekTarget = base + (i < remainder ? 1 : 0);
+    cumulative += weekTarget;
+    const prevCumulative = cumulative - weekTarget;
     milestones.push({
       week: i + 1,
-      target,
+      target: weekTarget,
       cumulative,
       done: goal.current_amount >= cumulative,
-      current: goal.current_amount < cumulative && (i === 0 || goal.current_amount >= perWeek * i),
+      current: goal.current_amount < cumulative && goal.current_amount >= prevCumulative,
     });
   }
   return milestones;
