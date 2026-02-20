@@ -152,14 +152,17 @@ export default function GoalDetail() {
       {goal.deadline && !isComplete && (() => {
         const now = new Date();
         const deadlineDate = new Date(goal.deadline);
-        const remaining = goal.target_amount - goal.current_amount;
         const msLeft = deadlineDate.getTime() - now.getTime();
-        const weeksLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 7));
-        const monthsLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 30.44));
         const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
-        const perWeek = weeksLeft > 0 ? Math.round(remaining / weeksLeft) : remaining;
-        const perMonth = monthsLeft > 0 ? Math.round(remaining / monthsLeft) : remaining;
         const isPastDeadline = msLeft <= 0;
+
+        // Use same weekly calculation as milestones (creation-to-deadline)
+        const totalMs = deadlineDate.getTime() - new Date(goal.created_at).getTime();
+        const totalWeeks = Math.max(1, Math.ceil(totalMs / (1000 * 60 * 60 * 24 * 7)));
+        const perWeek = Math.floor(goal.target_amount / totalWeeks);
+        const totalMonths = Math.max(1, Math.round(totalMs / (1000 * 60 * 60 * 24 * 30.44)));
+        const perMonth = Math.round(perWeek * (totalWeeks / totalMonths));
+        const remaining = goal.target_amount - goal.current_amount;
 
         // Check if on track: calculate expected progress
         const totalDuration = deadlineDate.getTime() - new Date(goal.created_at).getTime();
