@@ -22,7 +22,20 @@ export function useDeposit() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ goalId, amount, existingFruits }: { goalId: string; amount: number; existingFruits: FruitData[] }) => {
-      const newFruits = depositToFruits(existingFruits, amount, goalId);
+      // Calculate cherries from accumulated remainder so no rupees are lost
+      const { data: goalData } = await supabase.from("goals").select("current_amount").eq("id", goalId).single();
+      const currentAmount = (goalData?.current_amount || 0) + amount;
+      const currentFruitValue = totalFruitValue(existingFruits);
+      const unaccounted = currentAmount - currentFruitValue;
+      const cherryCount = Math.floor(unaccounted / 25);
+      
+      const newCherries: FruitData[] = Array.from({ length: cherryCount }, () => ({
+        id: crypto.randomUUID(),
+        goal_id: goalId,
+        tier: 1,
+        value: 25,
+      }));
+      const newFruits = [...existingFruits, ...newCherries];
 
       await supabase.from("fruits").delete().eq("goal_id", goalId);
 
@@ -33,12 +46,9 @@ export function useDeposit() {
         if (error) throw error;
       }
 
-      // Increment by actual deposit amount, not rounded fruit value
-      const { data: goalData } = await supabase.from("goals").select("current_amount").eq("id", goalId).single();
-      const newTotal = (goalData?.current_amount || 0) + amount;
-      await supabase.from("goals").update({ current_amount: newTotal }).eq("id", goalId);
+      await supabase.from("goals").update({ current_amount: currentAmount }).eq("id", goalId);
 
-      return { newFruits, newTotal };
+      return { newFruits, newTotal: currentAmount };
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["fruits", vars.goalId] });
