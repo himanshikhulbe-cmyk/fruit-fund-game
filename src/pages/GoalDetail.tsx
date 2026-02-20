@@ -157,8 +157,8 @@ export default function GoalDetail() {
         const weeksLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 7));
         const monthsLeft = Math.max(0, msLeft / (1000 * 60 * 60 * 24 * 30.44));
         const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
-        const perWeek = weeksLeft > 0 ? Math.ceil(remaining / weeksLeft) : remaining;
-        const perMonth = monthsLeft > 0 ? Math.ceil(remaining / monthsLeft) : remaining;
+        const perWeek = weeksLeft > 0 ? Math.round(remaining / weeksLeft) : remaining;
+        const perMonth = monthsLeft > 0 ? Math.round(remaining / monthsLeft) : remaining;
         const isPastDeadline = msLeft <= 0;
 
         // Check if on track: calculate expected progress
