@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useGoals, useDeleteGoal } from "@/hooks/useGoals";
 import { useFruits, useDeposit, useWithdraw, useManualMerge } from "@/hooks/useFruits";
+import { useGoalImages, getGoalImageUrl } from "@/hooks/useGoalImages";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FruitGrid from "@/components/FruitGrid";
@@ -15,6 +16,7 @@ export default function GoalDetail() {
   const navigate = useNavigate();
   const { data: goals } = useGoals();
   const { data: fruits, isLoading } = useFruits(id);
+  const { data: goalImages } = useGoalImages(id);
   const deposit = useDeposit();
   const withdraw = useWithdraw();
   const manualMerge = useManualMerge();
@@ -67,8 +69,9 @@ export default function GoalDetail() {
     setBreakOverlay({ tier: affectedTier, amount });
     setIsWithdrawing(true);
 
-    // Let the animation play
-    await new Promise((r) => setTimeout(r, 1800));
+    // Let the animation play (longer if there's motivation content)
+    const hasMotivation = !!goal.motivation_text || (goalImages && goalImages.length > 0);
+    await new Promise((r) => setTimeout(r, hasMotivation ? 4000 : 1800));
 
     await withdraw.mutateAsync({
       goalId: goal.id,
@@ -103,6 +106,8 @@ export default function GoalDetail() {
         visible={!!breakOverlay}
         tier={breakOverlay?.tier ?? 1}
         amount={breakOverlay?.amount ?? 0}
+        motivationText={goal.motivation_text}
+        motivationImages={goalImages?.map((img) => getGoalImageUrl(img.image_path))}
       />
 
       {/* Header */}
