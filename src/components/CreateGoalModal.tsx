@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useCreateGoal } from "@/hooks/useGoals";
+import { useUploadGoalImages } from "@/hooks/useGoalImages";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ImagePlus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -33,22 +34,51 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
   const [target, setTarget] = useState("1000");
   const [deadline, setDeadline] = useState<Date | undefined>();
   const [priority, setPriority] = useState<number>(1);
+  const [motivationText, setMotivationText] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const createGoal = useCreateGoal();
+  const uploadImages = useUploadGoalImages();
+
+  const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    const newPhotos = [...photos, ...files].slice(0, 5); // max 5
+    setPhotos(newPhotos);
+    // Generate previews
+    const previews = newPhotos.map((f) => URL.createObjectURL(f));
+    setPhotoPreviews(previews);
+  };
+
+  const removePhoto = (idx: number) => {
+    const newPhotos = photos.filter((_, i) => i !== idx);
+    setPhotos(newPhotos);
+    URL.revokeObjectURL(photoPreviews[idx]);
+    setPhotoPreviews(photoPreviews.filter((_, i) => i !== idx));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const targetNum = parseInt(target);
     if (!name || targetNum < 100) return;
-    await createGoal.mutateAsync({
+    const goal = await createGoal.mutateAsync({
       name,
       target_amount: targetNum,
       icon,
       deadline: deadline ? format(deadline, "yyyy-MM-dd") : undefined,
       priority,
+      motivation_text: motivationText.trim() || undefined,
     });
+    // Upload photos if any
+    if (photos.length > 0 && goal.id) {
+      await uploadImages.mutateAsync({ goalId: goal.id, files: photos });
+    }
     onClose();
   };
+
+  const isSubmitting = createGoal.isPending || uploadImages.isPending;
 
   return (
     <motion.div
@@ -206,12 +236,70 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
             </div>
           </div>
 
+          {/* Motivation Photos */}
+          <div>
+            <label className="text-xs font-bold text-muted-foreground mb-1 block">
+              📸 Motivation Photos (optional, max 5)
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              {photoPreviews.map((src, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
+                  <img src={src} alt="Motivation" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(i)}
+                    className="absolute top-0.5 right-0.5 bg-foreground/70 rounded-full p-0.5"
+                  >
+                    <X className="w-3 h-3 text-background" />
+                  </button>
+                </div>
+              ))}
+              {photos.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted hover:border-primary/50 transition-colors"
+                >
+                  <ImagePlus className="w-5 h-5 text-muted-foreground" />
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handlePhotoAdd}
+              className="hidden"
+            />
+          </div>
+
+          {/* Motivation Text */}
+          <div>
+            <label className="text-xs font-bold text-muted-foreground mb-1 block">
+              💬 Note to Future You (optional)
+            </label>
+            <textarea
+              value={motivationText}
+              onChange={(e) => setMotivationText(e.target.value)}
+              placeholder="Write something motivating... Why is this goal important to you?"
+              maxLength={500}
+              rows={3}
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            />
+            {motivationText.length > 0 && (
+              <p className="text-[10px] text-muted-foreground text-right mt-0.5">
+                {motivationText.length}/500
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
-            disabled={createGoal.isPending}
+            disabled={isSubmitting}
             className="w-full py-3 rounded-xl btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50"
           >
-            {createGoal.isPending ? "Creating..." : "Create Goal 🌱"}
+            {isSubmitting ? "Creating..." : "Create Goal 🌱"}
           </button>
         </form>
       </motion.div>

@@ -46,6 +46,35 @@ export type Database = {
           },
         ]
       }
+      goal_images: {
+        Row: {
+          created_at: string
+          goal_id: string
+          id: string
+          image_path: string
+        }
+        Insert: {
+          created_at?: string
+          goal_id: string
+          id?: string
+          image_path: string
+        }
+        Update: {
+          created_at?: string
+          goal_id?: string
+          id?: string
+          image_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_images_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goals: {
         Row: {
           created_at: string
@@ -53,6 +82,7 @@ export type Database = {
           deadline: string | null
           icon: string
           id: string
+          motivation_text: string | null
           name: string
           priority: number
           target_amount: number
@@ -64,6 +94,7 @@ export type Database = {
           deadline?: string | null
           icon?: string
           id?: string
+          motivation_text?: string | null
           name: string
           priority?: number
           target_amount?: number
@@ -75,6 +106,7 @@ export type Database = {
           deadline?: string | null
           icon?: string
           id?: string
+          motivation_text?: string | null
           name?: string
           priority?: number
           target_amount?: number
