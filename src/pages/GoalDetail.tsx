@@ -8,6 +8,7 @@ import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
 import Confetti from "@/components/Confetti";
 import GoalMilestones from "@/components/GoalMilestones";
+import FruitBreakOverlay from "@/components/FruitBreakOverlay";
 
 export default function GoalDetail() {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ export default function GoalDetail() {
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [breakOverlay, setBreakOverlay] = useState<{ tier: number; amount: number } | null>(null);
 
   const goal = goals?.find((g) => g.id === id);
   if (!goal) {
@@ -57,16 +59,24 @@ export default function GoalDetail() {
   };
 
   const handleWithdraw = async (amount: number) => {
-    setIsWithdrawing(true);
+    // Determine the highest tier fruit that will be affected
+    const sorted = [...(fruits ?? [])].sort((a, b) => b.tier - a.tier);
+    const affectedTier = sorted.length > 0 ? sorted[0].tier : 1;
+
     setShowWithdraw(false);
-    // Brief delay so user sees the breaking animation before data updates
-    await new Promise((r) => setTimeout(r, 600));
+    setBreakOverlay({ tier: affectedTier, amount });
+    setIsWithdrawing(true);
+
+    // Let the animation play
+    await new Promise((r) => setTimeout(r, 1800));
+
     await withdraw.mutateAsync({
       goalId: goal.id,
       amount,
       existingFruits: fruits ?? [],
     });
     setIsWithdrawing(false);
+    setBreakOverlay(null);
   };
 
   const handleMerge = async (fruitAId: string, fruitBId: string) => {
@@ -89,6 +99,11 @@ export default function GoalDetail() {
   return (
     <div className="min-h-screen bg-background pb-8 md:pb-12">
       {showConfetti && <Confetti />}
+      <FruitBreakOverlay
+        visible={!!breakOverlay}
+        tier={breakOverlay?.tier ?? 1}
+        amount={breakOverlay?.amount ?? 0}
+      />
 
       {/* Header */}
       <div className="sky-gradient px-4 pt-6 pb-6 rounded-b-2xl">
