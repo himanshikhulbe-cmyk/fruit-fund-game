@@ -54,6 +54,7 @@ export type Database = {
           icon: string
           id: string
           name: string
+          priority: number
           target_amount: number
           user_id: string
         }
@@ -64,6 +65,7 @@ export type Database = {
           icon?: string
           id?: string
           name: string
+          priority?: number
           target_amount?: number
           user_id: string
         }
@@ -74,6 +76,7 @@ export type Database = {
           icon?: string
           id?: string
           name?: string
+          priority?: number
           target_amount?: number
           user_id?: string
         }

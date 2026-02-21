@@ -22,6 +22,7 @@ export default function GoalDetail() {
   const [showDeposit, setShowDeposit] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const goal = goals?.find((g) => g.id === id);
   if (!goal) {
@@ -56,12 +57,16 @@ export default function GoalDetail() {
   };
 
   const handleWithdraw = async (amount: number) => {
+    setIsWithdrawing(true);
+    setShowWithdraw(false);
+    // Brief delay so user sees the breaking animation before data updates
+    await new Promise((r) => setTimeout(r, 600));
     await withdraw.mutateAsync({
       goalId: goal.id,
       amount,
       existingFruits: fruits ?? [],
     });
-    setShowWithdraw(false);
+    setIsWithdrawing(false);
   };
 
   const handleMerge = async (fruitAId: string, fruitBId: string) => {
@@ -120,7 +125,7 @@ export default function GoalDetail() {
               animate={{ y: 0, opacity: 1 }}
               className="card-playful p-4"
             >
-              <FruitGrid fruits={fruits ?? []} loading={isLoading} onMerge={handleMerge} merging={manualMerge.isPending} />
+              <FruitGrid fruits={fruits ?? []} loading={isLoading} onMerge={handleMerge} merging={manualMerge.isPending} withdrawing={isWithdrawing} />
             </motion.div>
           </div>
 

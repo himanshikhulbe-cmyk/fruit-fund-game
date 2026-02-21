@@ -86,7 +86,12 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-2xl">{goal.icon}</span>
                       <div className="flex-1">
-                        <h3 className="font-bold text-foreground">{goal.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-foreground">{goal.name}</h3>
+                          {goal.priority === 1 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive">High</span>}
+                          {goal.priority === 2 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-chart-4/15 text-chart-4">Med</span>}
+                          {goal.priority === 3 && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent/15 text-accent">Low</span>}
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           ₹{goal.current_amount.toLocaleString()} / ₹{goal.target_amount.toLocaleString()}
                         </p>

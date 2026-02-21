@@ -7,9 +7,10 @@ interface FruitGridProps {
   loading?: boolean;
   onMerge?: (fruitAId: string, fruitBId: string) => void;
   merging?: boolean;
+  withdrawing?: boolean;
 }
 
-export default function FruitGrid({ fruits, loading, onMerge, merging }: FruitGridProps) {
+export default function FruitGrid({ fruits, loading, onMerge, merging, withdrawing }: FruitGridProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleTap = useCallback(
@@ -128,12 +129,22 @@ export default function FruitGrid({ fruits, loading, onMerge, merging }: FruitGr
                     ? "0 0 12px hsl(var(--accent) / 0.4)"
                     : undefined,
                 }}
-                exit={{
-                  scale: 1.8,
-                  opacity: 0,
-                  rotate: 15,
-                  transition: { duration: 0.3, ease: "easeIn" },
-                }}
+                exit={
+                  withdrawing
+                    ? {
+                        scale: [1, 1.3, 0],
+                        opacity: [1, 0.8, 0],
+                        rotate: [0, -20, 45],
+                        filter: ["blur(0px)", "blur(0px)", "blur(4px)"],
+                        transition: { duration: 0.5, ease: "easeIn" },
+                      }
+                    : {
+                        scale: 1.8,
+                        opacity: 0,
+                        rotate: 15,
+                        transition: { duration: 0.3, ease: "easeIn" },
+                      }
+                }
                 transition={{
                   type: "spring",
                   stiffness: 260,
