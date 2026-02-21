@@ -32,6 +32,7 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
   const [icon, setIcon] = useState("🎯");
   const [target, setTarget] = useState("1000");
   const [deadline, setDeadline] = useState<Date | undefined>();
+  const [priority, setPriority] = useState<number>(1);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const createGoal = useCreateGoal();
 
@@ -44,6 +45,7 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
       target_amount: targetNum,
       icon,
       deadline: deadline ? format(deadline, "yyyy-MM-dd") : undefined,
+      priority,
     });
     onClose();
   };
@@ -177,6 +179,31 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
                 />
               </PopoverContent>
             </Popover>
+          </div>
+
+          {/* Priority */}
+          <div>
+            <label className="text-xs font-bold text-muted-foreground mb-1 block">Priority</label>
+            <div className="flex gap-2">
+              {[
+                { value: 1, label: "🔴 High", style: "bg-destructive/15 text-destructive border-destructive/30" },
+                { value: 2, label: "🟡 Medium", style: "bg-chart-4/15 text-chart-4 border-chart-4/30" },
+                { value: 3, label: "🟢 Low", style: "bg-accent/15 text-accent border-accent/30" },
+              ].map((p) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => setPriority(p.value)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
+                    priority === p.value
+                      ? p.style + " ring-2 ring-offset-1 ring-primary/30"
+                      : "bg-muted text-muted-foreground border-border"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <button

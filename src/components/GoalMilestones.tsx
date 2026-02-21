@@ -85,9 +85,11 @@ export default function GoalMilestones({ goal }: { goal: Goal }) {
                           </span>
                         </div>
                         <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all ${m.done ? "bg-accent" : "bg-primary"}`}
-                            style={{ width: `${m.done ? 100 : m.current ? pct : 0}%` }}
+                        <motion.div
+                            className={`h-full rounded-full ${m.done ? "bg-accent" : "bg-primary"}`}
+                            initial={false}
+                            animate={{ width: `${m.done ? 100 : m.current ? pct : 0}%` }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
                           />
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-0.5 font-semibold">
