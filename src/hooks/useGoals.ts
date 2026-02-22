@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { CustomFruitValues, CustomFruitEmojis } from "@/utils/fruitLogic";
 
 export interface Goal {
   id: string;
@@ -13,6 +14,9 @@ export interface Goal {
   deadline: string | null;
   priority: number;
   motivation_text: string | null;
+  is_fun_fund: boolean;
+  custom_fruit_values: CustomFruitValues | null;
+  custom_fruit_emojis: CustomFruitEmojis | null;
 }
 
 export interface GoalImage {
@@ -43,8 +47,9 @@ export function useCreateGoal() {
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async ({ name, target_amount, icon, deadline, priority, motivation_text }: {
+    mutationFn: async ({ name, target_amount, icon, deadline, priority, motivation_text, is_fun_fund, custom_fruit_values, custom_fruit_emojis }: {
       name: string; target_amount: number; icon: string; deadline?: string; priority?: number; motivation_text?: string;
+      is_fun_fund?: boolean; custom_fruit_values?: CustomFruitValues; custom_fruit_emojis?: CustomFruitEmojis;
     }) => {
       const { data, error } = await supabase
         .from("goals")
@@ -53,11 +58,28 @@ export function useCreateGoal() {
           ...(deadline ? { deadline } : {}),
           ...(priority !== undefined ? { priority } : {}),
           ...(motivation_text ? { motivation_text } : {}),
+          ...(is_fun_fund !== undefined ? { is_fun_fund } : {}),
+          ...(custom_fruit_values ? { custom_fruit_values: custom_fruit_values as any } : {}),
+          ...(custom_fruit_emojis ? { custom_fruit_emojis: custom_fruit_emojis as any } : {}),
         })
         .select()
         .single();
       if (error) throw error;
       return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
+  });
+}
+
+export function useUpdateGoal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ goalId, updates }: { goalId: string; updates: Partial<Pick<Goal, 'target_amount' | 'deadline' | 'motivation_text' | 'custom_fruit_values' | 'custom_fruit_emojis'>> }) => {
+      const { error } = await supabase
+        .from("goals")
+        .update(updates as any)
+        .eq("id", goalId);
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["goals"] }),
   });

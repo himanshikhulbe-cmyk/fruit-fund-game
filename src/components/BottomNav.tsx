@@ -27,6 +27,16 @@ export default function BottomNav({ onAddGoal, canCreate }: BottomNavProps) {
           <span className="text-[10px] font-bold">Home</span>
         </button>
 
+        <button
+          onClick={() => navigate("/circles")}
+          className={`flex flex-col items-center gap-0.5 py-1 px-3 ${
+            location.pathname === "/circles" ? "text-primary" : "text-muted-foreground"
+          }`}
+        >
+          <span className="text-xl">👥</span>
+          <span className="text-[10px] font-bold">Circles</span>
+        </button>
+
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={onAddGoal}
