@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FRUIT_TIERS, AVAILABLE_FRUIT_EMOJIS, CustomFruitValues, CustomFruitEmojis } from "@/utils/fruitLogic";
 
 const EMOJI_OPTIONS = [
   "🎯", "📚", "✈️", "🏥", "📱", "🆘", "🎮", "🏠", "🚗", "💍",
@@ -21,7 +22,7 @@ const GOAL_PRESETS = [
   { name: "Healthcare", icon: "🏥" },
   { name: "Gadgets", icon: "📱" },
   { name: "Emergency", icon: "🆘" },
-  { name: "Fun", icon: "🎮" },
+  { name: "Fun Fund", icon: "🎉", isFunFund: true },
 ];
 
 interface CreateGoalModalProps {
@@ -38,6 +39,19 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isFunFund, setIsFunFund] = useState(false);
+  const [showFruitCustom, setShowFruitCustom] = useState(false);
+
+  // Custom fruit values
+  const defaultValues: CustomFruitValues = {};
+  FRUIT_TIERS.forEach((ft) => { defaultValues[ft.tier] = ft.value; });
+  const [fruitValues, setFruitValues] = useState<CustomFruitValues>({ ...defaultValues });
+
+  // Custom fruit emojis
+  const defaultEmojis = FRUIT_TIERS.map((ft) => ft.emoji);
+  const [fruitEmojis, setFruitEmojis] = useState<CustomFruitEmojis>([...defaultEmojis]);
+  const [editingEmojiTier, setEditingEmojiTier] = useState<number | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createGoal = useCreateGoal();
   const uploadImages = useUploadGoalImages();
@@ -45,11 +59,9 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
-    const newPhotos = [...photos, ...files].slice(0, 5); // max 5
+    const newPhotos = [...photos, ...files].slice(0, 5);
     setPhotos(newPhotos);
-    // Generate previews
-    const previews = newPhotos.map((f) => URL.createObjectURL(f));
-    setPhotoPreviews(previews);
+    setPhotoPreviews(newPhotos.map((f) => URL.createObjectURL(f)));
   };
 
   const removePhoto = (idx: number) => {
@@ -59,19 +71,36 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
     setPhotoPreviews(photoPreviews.filter((_, i) => i !== idx));
   };
 
+  const handlePresetClick = (preset: typeof GOAL_PRESETS[0]) => {
+    setName(preset.name);
+    setIcon(preset.icon);
+    if ('isFunFund' in preset && preset.isFunFund) {
+      setIsFunFund(true);
+      setTarget("0");
+    } else {
+      setIsFunFund(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const targetNum = parseInt(target);
-    if (!name || targetNum < 100) return;
+    const targetNum = isFunFund ? 999999 : parseInt(target);
+    if (!name || (!isFunFund && targetNum < 100)) return;
+
+    const isDefaultValues = FRUIT_TIERS.every((ft) => fruitValues[ft.tier] === ft.value);
+    const isDefaultEmojis = FRUIT_TIERS.every((ft, i) => fruitEmojis[i] === ft.emoji);
+
     const goal = await createGoal.mutateAsync({
       name,
       target_amount: targetNum,
       icon,
-      deadline: deadline ? format(deadline, "yyyy-MM-dd") : undefined,
-      priority,
+      deadline: !isFunFund && deadline ? format(deadline, "yyyy-MM-dd") : undefined,
+      priority: isFunFund ? 99 : priority,
       motivation_text: motivationText.trim() || undefined,
+      is_fun_fund: isFunFund,
+      custom_fruit_values: isDefaultValues ? undefined : fruitValues,
+      custom_fruit_emojis: isDefaultEmojis ? undefined : fruitEmojis,
     });
-    // Upload photos if any
     if (photos.length > 0 && goal.id) {
       await uploadImages.mutateAsync({ goalId: goal.id, files: photos });
     }
@@ -105,11 +134,9 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
             <button
               key={p.name}
               type="button"
-              onClick={() => { setName(p.name); setIcon(p.icon); }}
+              onClick={() => handlePresetClick(p)}
               className={`p-2 rounded-lg text-sm font-bold text-center transition-all ${
-                name === p.name
-                  ? "bg-primary text-primary-foreground shadow-playful"
-                  : "bg-muted text-muted-foreground"
+                name === p.name ? "bg-primary text-primary-foreground shadow-playful" : "bg-muted text-muted-foreground"
               }`}
             >
               <span className="text-lg">{p.icon}</span>
@@ -119,33 +146,25 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
           ))}
         </div>
 
+        {isFunFund && (
+          <div className="bg-accent/10 border border-accent/20 rounded-xl p-3 mb-4 text-center">
+            <p className="text-xs font-bold text-accent">🎉 Fun Fund — No goals, no deadlines, no guilt!</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Icon picker */}
           <div>
             <label className="text-xs font-bold text-muted-foreground mb-1 block">Icon</label>
-            <button
-              type="button"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border text-sm font-semibold"
-            >
+            <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border text-sm font-semibold">
               <span className="text-2xl">{icon}</span>
               <span className="text-muted-foreground">Tap to change</span>
             </button>
             {showEmojiPicker && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                className="mt-2 grid grid-cols-6 gap-2 bg-muted rounded-lg p-3 overflow-hidden"
-              >
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-2 grid grid-cols-6 gap-2 bg-muted rounded-lg p-3 overflow-hidden">
                 {EMOJI_OPTIONS.map((e) => (
-                  <button
-                    key={e}
-                    type="button"
-                    onClick={() => { setIcon(e); setShowEmojiPicker(false); }}
-                    className={`text-2xl p-1 rounded-lg transition-all ${
-                      icon === e ? "bg-primary/20 scale-110" : "hover:bg-primary/10"
-                    }`}
-                  >
+                  <button key={e} type="button" onClick={() => { setIcon(e); setShowEmojiPicker(false); }}
+                    className={`text-2xl p-1 rounded-lg transition-all ${icon === e ? "bg-primary/20 scale-110" : "hover:bg-primary/10"}`}>
                     {e}
                   </button>
                 ))}
@@ -153,153 +172,129 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
             )}
           </div>
 
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Goal name"
-            required
-            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Amount (₹)</label>
-            <input
-              type="number"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              min={100}
-              required
-              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Goal name" required
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary" />
 
-          {/* Deadline */}
-          <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Deadline (optional)</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-semibold text-sm",
-                    !deadline && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {deadline ? format(deadline, "PPP") : "Pick a deadline"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={deadline}
-                  onSelect={setDeadline}
-                  disabled={(date) => date < new Date()}
-                  initialFocus
-                  captionLayout="dropdown-buttons"
-                  fromYear={new Date().getFullYear()}
-                  toYear={new Date().getFullYear() + 30}
-                  classNames={{
-                    caption_label: "hidden",
-                    caption_dropdowns: "flex gap-2",
-                    nav: "hidden",
-                  }}
-                  className={cn("p-3 pointer-events-auto")}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          {!isFunFund && (
+            <>
+              <div>
+                <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Amount (₹)</label>
+                <input type="number" value={target} onChange={(e) => setTarget(e.target.value)} min={100} required
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
 
-          {/* Priority */}
-          <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">Priority</label>
-            <div className="flex gap-2">
-              {[
-                { value: 1, label: "🔴 High", style: "bg-destructive/15 text-destructive border-destructive/30" },
-                { value: 2, label: "🟡 Medium", style: "bg-chart-4/15 text-chart-4 border-chart-4/30" },
-                { value: 3, label: "🟢 Low", style: "bg-accent/15 text-accent border-accent/30" },
-              ].map((p) => (
-                <button
-                  key={p.value}
-                  type="button"
-                  onClick={() => setPriority(p.value)}
-                  className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
-                    priority === p.value
-                      ? p.style + " ring-2 ring-offset-1 ring-primary/30"
-                      : "bg-muted text-muted-foreground border-border"
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
+              {/* Deadline */}
+              <div>
+                <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Deadline (optional)</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button type="button" variant="outline" className={cn("w-full justify-start text-left font-semibold text-sm", !deadline && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {deadline ? format(deadline, "PPP") : "Pick a deadline"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={deadline} onSelect={setDeadline} disabled={(date) => date < new Date()} initialFocus
+                      captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30}
+                      classNames={{ caption_label: "hidden", caption_dropdowns: "flex gap-2", nav: "hidden" }}
+                      className={cn("p-3 pointer-events-auto")} />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Priority */}
+              <div>
+                <label className="text-xs font-bold text-muted-foreground mb-1 block">Priority</label>
+                <div className="flex gap-2">
+                  {[
+                    { value: 1, label: "🔴 High", style: "bg-destructive/15 text-destructive border-destructive/30" },
+                    { value: 2, label: "🟡 Medium", style: "bg-chart-4/15 text-chart-4 border-chart-4/30" },
+                    { value: 3, label: "🟢 Low", style: "bg-accent/15 text-accent border-accent/30" },
+                  ].map((p) => (
+                    <button key={p.value} type="button" onClick={() => setPriority(p.value)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${
+                        priority === p.value ? p.style + " ring-2 ring-offset-1 ring-primary/30" : "bg-muted text-muted-foreground border-border"
+                      }`}>
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Motivation Photos */}
           <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">
-              📸 Motivation Photos (optional, max 5)
-            </label>
+            <label className="text-xs font-bold text-muted-foreground mb-1 block">📸 Motivation Photos (optional, max 5)</label>
             <div className="flex gap-2 flex-wrap">
               {photoPreviews.map((src, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
                   <img src={src} alt="Motivation" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(i)}
-                    className="absolute top-0.5 right-0.5 bg-foreground/70 rounded-full p-0.5"
-                  >
+                  <button type="button" onClick={() => removePhoto(i)} className="absolute top-0.5 right-0.5 bg-foreground/70 rounded-full p-0.5">
                     <X className="w-3 h-3 text-background" />
                   </button>
                 </div>
               ))}
               {photos.length < 5 && (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted hover:border-primary/50 transition-colors"
-                >
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted hover:border-primary/50 transition-colors">
                   <ImagePlus className="w-5 h-5 text-muted-foreground" />
                 </button>
               )}
             </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handlePhotoAdd}
-              className="hidden"
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handlePhotoAdd} className="hidden" />
           </div>
 
           {/* Motivation Text */}
           <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">
-              💬 Note to Future You (optional)
-            </label>
-            <textarea
-              value={motivationText}
-              onChange={(e) => setMotivationText(e.target.value)}
-              placeholder="Write something motivating... Why is this goal important to you?"
-              maxLength={500}
-              rows={3}
-              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            />
-            {motivationText.length > 0 && (
-              <p className="text-[10px] text-muted-foreground text-right mt-0.5">
-                {motivationText.length}/500
-              </p>
-            )}
+            <label className="text-xs font-bold text-muted-foreground mb-1 block">💬 Note to Future You (optional)</label>
+            <textarea value={motivationText} onChange={(e) => setMotivationText(e.target.value)}
+              placeholder="Write something motivating..." maxLength={500} rows={3}
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
+            {motivationText.length > 0 && <p className="text-[10px] text-muted-foreground text-right mt-0.5">{motivationText.length}/500</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50"
-          >
-            {isSubmitting ? "Creating..." : "Create Goal 🌱"}
+          {/* Fruit Customization */}
+          <button type="button" onClick={() => setShowFruitCustom(!showFruitCustom)} className="w-full text-left text-xs font-bold text-primary py-2">
+            {showFruitCustom ? "▼" : "▶"} Customize Fruit Tiers
+          </button>
+
+          {showFruitCustom && (
+            <div className="space-y-2 bg-muted/50 rounded-xl p-3">
+              {FRUIT_TIERS.map((ft, i) => (
+                <div key={ft.tier} className="flex items-center gap-2">
+                  <button type="button" onClick={() => setEditingEmojiTier(editingEmojiTier === ft.tier ? null : ft.tier)}
+                    className="text-2xl w-10 h-10 flex items-center justify-center rounded-lg bg-card border border-border">
+                    {fruitEmojis[i]}
+                  </button>
+                  <span className="text-xs font-bold text-muted-foreground w-12">Tier {ft.tier}</span>
+                  <div className="flex-1">
+                    <input type="number" value={fruitValues[ft.tier]}
+                      onChange={(e) => setFruitValues({ ...fruitValues, [ft.tier]: parseInt(e.target.value) || 0 })}
+                      min={1}
+                      className="w-full px-2 py-1.5 rounded-lg bg-card border border-border text-foreground text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder={`₹${ft.value}`} />
+                  </div>
+                </div>
+              ))}
+              {editingEmojiTier !== null && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                  className="grid grid-cols-6 gap-1.5 bg-card rounded-lg p-2 border border-border overflow-hidden">
+                  {AVAILABLE_FRUIT_EMOJIS.map((e) => (
+                    <button key={e} type="button" onClick={() => {
+                      const idx = editingEmojiTier - 1;
+                      const newEmojis = [...fruitEmojis];
+                      newEmojis[idx] = e;
+                      setFruitEmojis(newEmojis);
+                      setEditingEmojiTier(null);
+                    }} className="text-xl p-1 rounded hover:bg-primary/10 transition-colors">{e}</button>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+          )}
+
+          <button type="submit" disabled={isSubmitting} className="w-full py-3 rounded-xl btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
+            {isSubmitting ? "Creating..." : isFunFund ? "Create Fun Fund 🎉" : "Create Goal 🌱"}
           </button>
         </form>
       </motion.div>

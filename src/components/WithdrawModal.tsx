@@ -6,18 +6,24 @@ interface WithdrawModalProps {
   onWithdraw: (amount: number) => void;
   loading: boolean;
   maxAmount: number;
+  isFunFund?: boolean;
 }
 
-export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount }: WithdrawModalProps) {
+export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount, isFunFund }: WithdrawModalProps) {
   const [amount, setAmount] = useState("");
-  const [step, setStep] = useState<"amount" | "needwant" | "confirm">("amount");
+  const [step, setStep] = useState<"amount" | "needwant" | "confirm">(isFunFund ? "amount" : "amount");
   const [reason, setReason] = useState<"need" | "want" | null>(null);
 
   const handleAmountSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const num = parseInt(amount);
     if (num <= 0 || num > maxAmount) return;
-    setStep("needwant");
+    if (isFunFund) {
+      // Skip need/want for fun fund — go straight to withdrawal
+      onWithdraw(num);
+    } else {
+      setStep("needwant");
+    }
   };
 
   const handleReasonSelect = (r: "need" | "want") => {
@@ -42,7 +48,9 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
         className="w-full max-w-md bg-card rounded-t-2xl p-6"
       >
         <div className="w-10 h-1 bg-border rounded-full mx-auto mb-4" />
-        <h2 className="text-lg font-black text-foreground mb-1">Withdraw 📤</h2>
+        <h2 className="text-lg font-black text-foreground mb-1">
+          {isFunFund ? "Spend from Fun Fund 🎉" : "Withdraw 📤"}
+        </h2>
         <p className="text-xs text-muted-foreground font-semibold mb-4">
           Available: ₹{maxAmount.toLocaleString()}
         </p>
@@ -56,17 +64,8 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setStep("needwant")}
-                className="py-3 rounded-xl bg-muted text-foreground font-bold text-sm"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => onWithdraw(parseInt(amount))}
-                disabled={loading}
-                className="py-3 rounded-xl btn-withdraw text-destructive-foreground font-bold text-sm disabled:opacity-50"
-              >
+              <button onClick={() => setStep("needwant")} className="py-3 rounded-xl bg-muted text-foreground font-bold text-sm">Cancel</button>
+              <button onClick={() => onWithdraw(parseInt(amount))} disabled={loading} className="py-3 rounded-xl btn-withdraw text-destructive-foreground font-bold text-sm disabled:opacity-50">
                 {loading ? "..." : "Confirm"}
               </button>
             </div>
@@ -93,12 +92,7 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
                 <span className="text-[10px] text-muted-foreground font-semibold">Nice to have</span>
               </button>
             </div>
-            <button
-              onClick={() => { setStep("amount"); setReason(null); }}
-              className="w-full py-2 text-xs text-muted-foreground font-semibold"
-            >
-              ← Back
-            </button>
+            <button onClick={() => { setStep("amount"); setReason(null); }} className="w-full py-2 text-xs text-muted-foreground font-semibold">← Back</button>
           </div>
         ) : (
           <form onSubmit={handleAmountSubmit} className="space-y-3">
@@ -115,9 +109,13 @@ export default function WithdrawModal({ onClose, onWithdraw, loading, maxAmount 
             <button
               type="submit"
               disabled={!amount}
-              className="w-full py-3 rounded-xl btn-withdraw text-destructive-foreground font-bold text-sm disabled:opacity-50"
+              className={`w-full py-3 rounded-xl font-bold text-sm disabled:opacity-50 ${
+                isFunFund
+                  ? "btn-deposit text-primary-foreground"
+                  : "btn-withdraw text-destructive-foreground"
+              }`}
             >
-              Continue
+              {isFunFund ? "Spend 🎉" : "Continue"}
             </button>
           </form>
         )}

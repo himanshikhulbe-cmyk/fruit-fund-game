@@ -14,11 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
+      circle_deposits: {
+        Row: {
+          amount: number
+          circle_id: string
+          deposited_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          circle_id: string
+          deposited_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          circle_id?: string
+          deposited_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_deposits_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circle_members: {
+        Row: {
+          circle_id: string
+          display_name: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          circle_id: string
+          display_name?: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          circle_id?: string
+          display_name?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circles: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          invite_code: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          invite_code?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          invite_code?: string
+          name?: string
+        }
+        Relationships: []
+      }
       fruits: {
         Row: {
           created_at: string
           goal_id: string
           id: string
+          is_special: boolean
+          special_type: string | null
           tier: number
           value: number
         }
@@ -26,6 +116,8 @@ export type Database = {
           created_at?: string
           goal_id: string
           id?: string
+          is_special?: boolean
+          special_type?: string | null
           tier?: number
           value?: number
         }
@@ -33,6 +125,8 @@ export type Database = {
           created_at?: string
           goal_id?: string
           id?: string
+          is_special?: boolean
+          special_type?: string | null
           tier?: number
           value?: number
         }

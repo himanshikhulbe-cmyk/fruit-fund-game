@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import GoalDetail from "./pages/GoalDetail";
+import CirclesPage from "./pages/CirclesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
               <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/goal/:id" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
+              <Route path="/circles" element={<ProtectedRoute><CirclesPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
