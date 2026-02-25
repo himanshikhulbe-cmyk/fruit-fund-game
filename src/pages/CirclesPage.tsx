@@ -118,24 +118,24 @@ export default function CirclesPage() {
         <p className="text-primary-foreground/70 text-xs font-semibold">Save together, grow together</p>
       </div>
 
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-4 pb-20">
         {selectedCircle ? (
           <CircleDetail circle={selectedCircle} onBack={() => setSelectedCircle(null)} />
         ) : (
           <>
-            {/* Action buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            {/* Action buttons - sticky at top */}
+            <div className="grid grid-cols-2 gap-3 mb-4 sticky top-0 z-10 bg-background py-2">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreate(true)}
-                className="btn-deposit py-3 rounded-xl text-primary-foreground font-bold text-sm"
+                className="btn-deposit py-3.5 rounded-xl text-primary-foreground font-bold text-sm min-h-[48px]"
               >
                 Create Circle
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowJoin(true)}
-                className="py-3 rounded-xl bg-secondary text-secondary-foreground font-bold text-sm"
+                className="py-3.5 rounded-xl bg-secondary text-secondary-foreground font-bold text-sm min-h-[48px]"
               >
                 Join Circle
               </motion.button>

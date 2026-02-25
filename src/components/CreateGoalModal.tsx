@@ -223,35 +223,39 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
             </>
           )}
 
-          {/* Motivation Photos */}
-          <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">📸 Motivation Photos (optional, max 5)</label>
-            <div className="flex gap-2 flex-wrap">
-              {photoPreviews.map((src, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
-                  <img src={src} alt="Motivation" className="w-full h-full object-cover" />
-                  <button type="button" onClick={() => removePhoto(i)} className="absolute top-0.5 right-0.5 bg-foreground/70 rounded-full p-0.5">
-                    <X className="w-3 h-3 text-background" />
+          {/* Motivation Photos - hidden for Fun Fund */}
+          {!isFunFund && (
+            <div>
+              <label className="text-xs font-bold text-muted-foreground mb-1 block">📸 Motivation Photos (optional, max 5)</label>
+              <div className="flex gap-2 flex-wrap">
+                {photoPreviews.map((src, i) => (
+                  <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
+                    <img src={src} alt="Motivation" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => removePhoto(i)} className="absolute top-0.5 right-0.5 bg-foreground/70 rounded-full p-0.5">
+                      <X className="w-3 h-3 text-background" />
+                    </button>
+                  </div>
+                ))}
+                {photos.length < 5 && (
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted hover:border-primary/50 transition-colors">
+                    <ImagePlus className="w-5 h-5 text-muted-foreground" />
                   </button>
-                </div>
-              ))}
-              {photos.length < 5 && (
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted hover:border-primary/50 transition-colors">
-                  <ImagePlus className="w-5 h-5 text-muted-foreground" />
-                </button>
-              )}
+                )}
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handlePhotoAdd} className="hidden" />
             </div>
-            <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handlePhotoAdd} className="hidden" />
-          </div>
+          )}
 
-          {/* Motivation Text */}
-          <div>
-            <label className="text-xs font-bold text-muted-foreground mb-1 block">💬 Note to Future You (optional)</label>
-            <textarea value={motivationText} onChange={(e) => setMotivationText(e.target.value)}
-              placeholder="Write something motivating..." maxLength={500} rows={3}
-              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
-            {motivationText.length > 0 && <p className="text-[10px] text-muted-foreground text-right mt-0.5">{motivationText.length}/500</p>}
-          </div>
+          {/* Motivation Text - hidden for Fun Fund */}
+          {!isFunFund && (
+            <div>
+              <label className="text-xs font-bold text-muted-foreground mb-1 block">💬 Note to Future You (optional)</label>
+              <textarea value={motivationText} onChange={(e) => setMotivationText(e.target.value)}
+                placeholder="Write something motivating..." maxLength={500} rows={3}
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
+              {motivationText.length > 0 && <p className="text-[10px] text-muted-foreground text-right mt-0.5">{motivationText.length}/500</p>}
+            </div>
+          )}
 
           {/* Fruit Customization */}
           <button type="button" onClick={() => setShowFruitCustom(!showFruitCustom)} className="w-full text-left text-xs font-bold text-primary py-2">
