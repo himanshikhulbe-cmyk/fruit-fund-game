@@ -263,31 +263,34 @@ export default function GoalDetail() {
 
         {/* Right column */}
         <div>
-          {/* Savings Pace (not for fun fund) */}
+          {/* Adaptive Savings / Pace (not for fun fund) */}
           {!goal.is_fun_fund && goal.deadline && !isComplete && (() => {
             const now = new Date();
             const deadlineDate = new Date(goal.deadline);
+            const created = new Date(goal.created_at);
             const msLeft = deadlineDate.getTime() - now.getTime();
             const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
             const isPastDeadline = msLeft <= 0;
 
-            const totalMs = deadlineDate.getTime() - new Date(goal.created_at).getTime();
-            const totalWeeks = Math.max(1, Math.ceil(totalMs / (1000 * 60 * 60 * 24 * 7)));
-            const perWeek = Math.floor(goal.target_amount / totalWeeks);
-            const totalMonths = Math.max(1, Math.round(totalMs / (1000 * 60 * 60 * 24 * 30.44)));
-            const perMonth = Math.round(perWeek * (totalWeeks / totalMonths));
             const remaining = goal.target_amount - goal.current_amount;
+            const totalMs = deadlineDate.getTime() - created.getTime();
+            const totalDays = Math.max(1, Math.ceil(totalMs / (1000 * 60 * 60 * 24)));
+            const daysElapsed = Math.max(0, totalDays - daysLeft);
 
-            const totalDuration = deadlineDate.getTime() - new Date(goal.created_at).getTime();
-            const elapsed = now.getTime() - new Date(goal.created_at).getTime();
-            const expectedPct = totalDuration > 0 ? Math.min(100, (elapsed / totalDuration) * 100) : 100;
-            const onTrack = pct >= expectedPct - 5;
+            // Adaptive recalculation
+            const adaptiveDaily = daysLeft > 0 ? Math.ceil(remaining / daysLeft) : remaining;
+            const adaptiveWeekly = Math.min(remaining, adaptiveDaily * 7);
+            const adaptiveMonthly = Math.min(remaining, adaptiveDaily * 30);
+
+            // Behind detection
+            const expectedByNow = daysElapsed > 0 ? Math.round((goal.target_amount / totalDays) * daysElapsed) : 0;
+            const onTrack = goal.current_amount >= expectedByNow * 0.95;
 
             return (
               <div className="px-4 md:px-0 mt-4 md:mt-0">
                 <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} className="card-playful p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-bold text-foreground">📊 Savings Pace</h3>
+                    <h3 className="text-sm font-bold text-foreground">📊 Adaptive Savings Pace</h3>
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       isPastDeadline ? "bg-destructive/15 text-destructive" : onTrack ? "bg-accent/15 text-accent" : "bg-chart-4/15 text-chart-4"
                     }`}>
@@ -297,11 +300,21 @@ export default function GoalDetail() {
                   {isPastDeadline ? (
                     <p className="text-xs text-muted-foreground">Deadline has passed. ₹{remaining.toLocaleString()} still needed.</p>
                   ) : (
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div><p className="text-lg font-black text-foreground">{daysLeft}</p><p className="text-[10px] text-muted-foreground font-semibold">Days Left</p></div>
-                      <div><p className="text-lg font-black text-primary">₹{perWeek.toLocaleString()}</p><p className="text-[10px] text-muted-foreground font-semibold">Per Week</p></div>
-                      <div><p className="text-lg font-black text-primary">₹{perMonth.toLocaleString()}</p><p className="text-[10px] text-muted-foreground font-semibold">Per Month</p></div>
-                    </div>
+                    <>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div><p className="text-lg font-black text-foreground">{daysLeft}</p><p className="text-[10px] text-muted-foreground font-semibold">Days Left</p></div>
+                        <div><p className="text-lg font-black text-primary">₹{adaptiveDaily.toLocaleString()}</p><p className="text-[10px] text-muted-foreground font-semibold">Per Day</p></div>
+                        <div><p className="text-lg font-black text-primary">₹{adaptiveWeekly.toLocaleString()}</p><p className="text-[10px] text-muted-foreground font-semibold">Per Week</p></div>
+                      </div>
+                      {!onTrack && !isPastDeadline && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 bg-chart-4/10 rounded-lg p-2.5 text-center">
+                          <p className="text-[11px] font-bold text-foreground">
+                            Save ₹{adaptiveDaily.toLocaleString()}/day to catch up 💪
+                          </p>
+                          <p className="text-[10px] text-muted-foreground italic mt-0.5">Small catch-ups build big wins.</p>
+                        </motion.div>
+                      )}
+                    </>
                   )}
                 </motion.div>
               </div>
@@ -328,6 +341,10 @@ export default function GoalDetail() {
             loading={withdraw.isPending}
             maxAmount={goal.current_amount}
             isFunFund={goal.is_fun_fund}
+            goalName={goal.name}
+            goalIcon={goal.icon}
+            goalProgress={pct}
+            goalRemaining={goal.target_amount - goal.current_amount}
           />
         )}
         {showWhyStarted && (

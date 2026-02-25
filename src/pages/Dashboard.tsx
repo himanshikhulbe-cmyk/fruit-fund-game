@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import CreateGoalModal from "@/components/CreateGoalModal";
+import SavingsNudgeBanner from "@/components/SavingsNudgeBanner";
 
 export default function Dashboard() {
   const { data: goals, isLoading } = useGoals();
@@ -41,6 +42,9 @@ export default function Dashboard() {
           </div>
         </motion.div>
       </div>
+
+      {/* Savings Nudge Banner */}
+      {goals && goals.length > 0 && <SavingsNudgeBanner goals={goals} />}
 
       {/* Goals */}
       <div className="px-4 mt-6">
