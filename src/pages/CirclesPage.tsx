@@ -7,82 +7,132 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 
-function CircleGoalDetail({ goal, members }: { goal: CircleGoal; members: any[] }) {
+function CircleGoalDetail({ goal, members, circleId }: { goal: CircleGoal; members: any[]; circleId: string }) {
   const { data: contributions } = useCircleGoalContributions(goal.id);
   const contribute = useContributeToCircleGoal();
+  const { user } = useAuth();
   const [amount, setAmount] = useState("");
 
   const pct = goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
+  const remaining = Math.max(0, goal.target_amount - goal.current_amount);
 
   // Contribution breakdown per member
   const byMember: Record<string, number> = {};
   contributions?.forEach((c) => { byMember[c.user_id] = (byMember[c.user_id] || 0) + c.amount; });
 
+  // Deadline countdown
+  const daysLeft = goal.deadline
+    ? Math.max(0, Math.ceil((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
+
   const handleContribute = async (e: React.FormEvent) => {
     e.preventDefault();
     const amt = parseInt(amount);
     if (!amt || amt <= 0) return;
-    await contribute.mutateAsync({ circleGoalId: goal.id, amount: amt });
+    await contribute.mutateAsync({ circleGoalId: goal.id, amount: amt, circleId });
     setAmount("");
-    toast({ title: "✅ Contributed!" });
+    toast({ title: "✅ Contributed ₹" + amt });
   };
 
   return (
-    <div className="card-playful p-3 space-y-2">
+    <div className="card-playful p-4 space-y-3">
       <div className="flex items-center gap-2">
         <span className="text-xl">{goal.icon}</span>
         <div className="flex-1">
           <p className="text-sm font-bold text-foreground">{goal.name}</p>
-          <p className="text-[10px] text-muted-foreground">₹{goal.current_amount.toLocaleString()} / ₹{goal.target_amount.toLocaleString()}</p>
+          <p className="text-[10px] text-muted-foreground">
+            ₹{goal.current_amount.toLocaleString()} / ₹{goal.target_amount.toLocaleString()}
+            {remaining > 0 && <span> • ₹{remaining.toLocaleString()} left</span>}
+          </p>
         </div>
         <span className="text-xs font-black text-primary">{Math.round(pct)}%</span>
       </div>
-      <div className="h-2 bg-muted rounded-full overflow-hidden">
-        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} className="h-full bg-primary rounded-full" />
+
+      {/* Progress bar */}
+      <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8 }} className="h-full bg-primary rounded-full" />
       </div>
+
+      {/* Deadline */}
+      {daysLeft !== null && (
+        <p className="text-[10px] text-muted-foreground font-semibold">
+          {daysLeft > 0 ? `🗓️ ${daysLeft} days left` : "⚠️ Deadline passed"}
+        </p>
+      )}
+
       {/* Member breakdown */}
       <div className="space-y-1">
+        <p className="text-[10px] font-bold text-muted-foreground">Contributions</p>
         {members?.map((m) => {
           const memberAmt = byMember[m.user_id] ?? 0;
-          const memberPct = goal.current_amount > 0 ? Math.round((memberAmt / goal.current_amount) * 100) : 0;
+          const memberPct = goal.current_amount > 0 ? ((memberAmt / goal.current_amount) * 100) : 0;
           return (
-            <div key={m.id} className="flex items-center justify-between text-[10px]">
-              <span className="font-bold text-foreground">{m.display_name}</span>
-              <span className="text-muted-foreground">₹{memberAmt.toLocaleString()} ({memberPct}%)</span>
+            <div key={m.id} className="flex items-center justify-between text-[10px] py-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center text-[8px] font-bold text-primary">
+                  {m.display_name.charAt(0).toUpperCase()}
+                </span>
+                <span className="font-bold text-foreground">{m.display_name}</span>
+              </div>
+              <span className="text-muted-foreground">₹{memberAmt.toLocaleString()} ({Math.round(memberPct)}%)</span>
             </div>
           );
         })}
       </div>
-      <form onSubmit={handleContribute} className="flex gap-2">
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="₹ Amount"
-          min={1}
-          className="flex-1 px-2 py-1.5 rounded-lg bg-muted border border-border text-foreground text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        <button type="submit" disabled={contribute.isPending} className="px-3 py-1.5 rounded-lg btn-deposit text-primary-foreground font-bold text-[10px] disabled:opacity-50">
-          Contribute
-        </button>
-      </form>
+
+      {/* Contribute form */}
+      {pct < 100 && (
+        <form onSubmit={handleContribute} className="flex gap-2">
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="₹ Amount"
+            min={1}
+            className="flex-1 px-2 py-1.5 rounded-lg bg-muted border border-border text-foreground text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <button type="submit" disabled={contribute.isPending} className="px-3 py-1.5 rounded-lg btn-deposit text-primary-foreground font-bold text-[10px] disabled:opacity-50">
+            Contribute
+          </button>
+        </form>
+      )}
+      {pct >= 100 && (
+        <p className="text-xs font-bold text-accent text-center">🎉 Goal Complete!</p>
+      )}
+
+      {/* Activity log */}
+      {contributions && contributions.length > 0 && (
+        <div className="space-y-1 max-h-32 overflow-y-auto">
+          <p className="text-[10px] font-bold text-muted-foreground">Activity</p>
+          {contributions.slice(0, 10).map((c) => {
+            const member = members?.find((m) => m.user_id === c.user_id);
+            return (
+              <div key={c.id} className="flex items-center justify-between text-[9px] text-muted-foreground py-0.5">
+                <span>{member?.display_name ?? "Member"} deposited ₹{c.amount.toLocaleString()}</span>
+                <span>{new Date(c.contributed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
-function CircleLeaderboard({ deposits, members }: { deposits: any[]; members: any[] }) {
+function CircleLeaderboard({ deposits, members, circleGoals }: { deposits: any[]; members: any[]; circleGoals?: CircleGoal[] }) {
   const [sortBy, setSortBy] = useState<"amount" | "streak">("amount");
 
-  // Calculate per-member stats
   const memberStats = members?.map((m) => {
     const memberDeposits = deposits?.filter((d) => d.user_id === m.user_id) ?? [];
     const totalAmount = memberDeposits.reduce((s, d) => s + d.amount, 0);
 
-    // Calculate streaks
-    const dates = [...new Set(memberDeposits.map((d) => new Date(d.deposited_at).toDateString()))].sort();
+    // Calculate streaks from deposit dates
+    const dates = [...new Set(memberDeposits.map((d) => new Date(d.deposited_at).toDateString()))].sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime()
+    );
     let currentStreak = 0;
     let longestStreak = 0;
-    let tempStreak = 1;
+    let tempStreak = dates.length > 0 ? 1 : 0;
 
     for (let i = 1; i < dates.length; i++) {
       const prev = new Date(dates[i - 1]);
@@ -96,10 +146,17 @@ function CircleLeaderboard({ deposits, members }: { deposits: any[]; members: an
       }
     }
     longestStreak = Math.max(longestStreak, tempStreak);
-    currentStreak = tempStreak;
+
+    // Current streak: check if last deposit was today or yesterday
+    if (dates.length > 0) {
+      const lastDate = new Date(dates[dates.length - 1]);
+      const today = new Date();
+      const daysDiff = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+      currentStreak = daysDiff <= 1 ? tempStreak : 0;
+    }
 
     const totalDeposits = deposits?.reduce((s, d) => s + d.amount, 0) ?? 1;
-    const pct = totalDeposits > 0 ? Math.round((totalAmount / totalDeposits) * 100) : 0;
+    const pct = totalDeposits > 0 ? (totalAmount / totalDeposits) * 100 : 0;
 
     return { ...m, totalAmount, currentStreak, longestStreak, pct };
   }) ?? [];
@@ -125,47 +182,91 @@ function CircleLeaderboard({ deposits, members }: { deposits: any[]; members: an
           </button>
         </div>
       </div>
-      <div className="space-y-2">
-        {sorted.map((m, i) => (
-          <div key={m.id} className={`flex items-center gap-2 py-2 px-2.5 rounded-lg ${i === 0 ? "bg-accent/10" : "bg-muted/40"}`}>
-            <span className="text-lg w-6 text-center">{rankEmojis[i] ?? `#${i + 1}`}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground truncate">{m.display_name}</p>
-              <div className="flex gap-3 text-[10px] text-muted-foreground">
-                <span>₹{m.totalAmount.toLocaleString()}</span>
-                <span>🔥 {m.currentStreak}d streak</span>
-                <span>Best: {m.longestStreak}d</span>
-                <span>{m.pct}%</span>
+      {sorted.length === 0 ? (
+        <p className="text-xs text-muted-foreground text-center py-4">No deposits yet. Start saving!</p>
+      ) : (
+        <div className="space-y-2">
+          {sorted.map((m, i) => (
+            <div key={m.id} className={`flex items-center gap-2 py-2 px-2.5 rounded-lg ${i === 0 ? "bg-accent/10" : "bg-muted/40"}`}>
+              <span className="text-lg w-6 text-center">{rankEmojis[i] ?? `#${i + 1}`}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground truncate">{m.display_name}</p>
+                <div className="flex gap-3 text-[10px] text-muted-foreground flex-wrap">
+                  <span>₹{m.totalAmount.toLocaleString()}</span>
+                  <span>🔥 {m.currentStreak}d</span>
+                  <span>Best: {m.longestStreak}d</span>
+                  <span>{Math.round(m.pct)}%</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CircleActivityLog({ deposits, members }: { deposits: any[]; members: any[] }) {
+  if (!deposits || deposits.length === 0) return null;
+
+  return (
+    <div className="card-playful p-4 mt-3">
+      <h3 className="text-sm font-bold text-foreground mb-2">📋 Activity Log</h3>
+      <div className="space-y-1.5 max-h-48 overflow-y-auto">
+        {deposits.slice(0, 20).map((d) => {
+          const member = members?.find((m) => m.user_id === d.user_id);
+          return (
+            <div key={d.id} className="flex items-center justify-between text-[10px] py-1 border-b border-border/50 last:border-0">
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center text-[8px] font-bold text-primary">
+                  {(member?.display_name ?? "?").charAt(0).toUpperCase()}
+                </span>
+                <span className="font-bold text-foreground">{member?.display_name ?? "Member"}</span>
+                <span className="text-muted-foreground">deposited</span>
+                <span className="font-bold text-primary">₹{d.amount.toLocaleString()}</span>
+              </div>
+              <span className="text-muted-foreground text-[9px]">
+                {new Date(d.deposited_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 function CircleDetail({ circle, onBack }: { circle: Circle; onBack: () => void }) {
-  const { data: members } = useCircleMembers(circle.id);
+  const { data: members, isLoading: membersLoading } = useCircleMembers(circle.id);
   const { data: deposits } = useCircleDeposits(circle.id);
   const { data: circleGoals } = useCircleGoals(circle.id);
   const createGoal = useCreateCircleGoal();
   const logDeposit = useLogCircleDeposit();
   const { user } = useAuth();
 
+  const [activeTab, setActiveTab] = useState<"goals" | "leaderboard" | "activity">("goals");
   const [showCreateGoal, setShowCreateGoal] = useState(false);
   const [goalName, setGoalName] = useState("");
   const [goalTarget, setGoalTarget] = useState("1000");
+  const [goalDeadline, setGoalDeadline] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
 
   const totalCircleSavings = deposits?.reduce((s, d) => s + d.amount, 0) ?? 0;
+  const isCreator = circle.created_by === user?.id;
 
   const handleCreateGoal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!goalName.trim()) return;
-    await createGoal.mutateAsync({ circleId: circle.id, name: goalName.trim(), targetAmount: parseInt(goalTarget) || 1000, icon: "🎯" });
+    await createGoal.mutateAsync({
+      circleId: circle.id,
+      name: goalName.trim(),
+      targetAmount: parseInt(goalTarget) || 1000,
+      icon: "🎯",
+      deadline: goalDeadline || undefined,
+    });
     setGoalName("");
     setGoalTarget("1000");
+    setGoalDeadline("");
     setShowCreateGoal(false);
     toast({ title: "🎯 Shared goal created!" });
   };
@@ -179,15 +280,33 @@ function CircleDetail({ circle, onBack }: { circle: Circle; onBack: () => void }
     toast({ title: "💰 Deposit logged!" });
   };
 
+  const tabs = [
+    { id: "goals" as const, label: "🤝 FriendFund" },
+    { id: "leaderboard" as const, label: "🏆 Board" },
+    { id: "activity" as const, label: "📋 Activity" },
+  ];
+
   return (
     <div>
       <button onClick={onBack} className="text-primary font-bold text-sm mb-4">← Back to Circles</button>
+
+      {/* Circle Header */}
       <div className="card-playful p-4 mb-4">
-        <h2 className="text-lg font-black text-foreground">{circle.name}</h2>
-        <p className="text-xs text-muted-foreground font-semibold">
-          Invite Code: <span className="text-primary font-black">{circle.invite_code}</span>
-        </p>
-        <p className="text-xs text-muted-foreground">{members?.length ?? 0} members • ₹{totalCircleSavings.toLocaleString()} total</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-black text-foreground">{circle.name}</h2>
+            <p className="text-xs text-muted-foreground font-semibold">
+              Invite Code: <span className="text-primary font-black select-all">{circle.invite_code}</span>
+            </p>
+          </div>
+          {isCreator && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent/15 text-accent">👑 Creator</span>
+          )}
+        </div>
+        <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+          <span>{members?.length ?? 0} members</span>
+          <span>₹{totalCircleSavings.toLocaleString()} total</span>
+        </div>
       </div>
 
       {/* Log personal deposit */}
@@ -201,82 +320,120 @@ function CircleDetail({ circle, onBack }: { circle: Circle; onBack: () => void }
           className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <button type="submit" disabled={logDeposit.isPending} className="px-4 py-2 rounded-lg btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
-          Log 💰
+          {logDeposit.isPending ? "..." : "Log 💰"}
         </button>
       </form>
 
-      {/* Leaderboard */}
-      {members && deposits && <CircleLeaderboard deposits={deposits} members={members} />}
-
-      {/* FriendFund - Shared Goals */}
-      <div className="mt-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-bold text-foreground">🤝 FriendFund Goals</h3>
-          <button onClick={() => setShowCreateGoal(!showCreateGoal)} className="text-xs font-bold text-primary">+ New</button>
-        </div>
-
-        <AnimatePresence>
-          {showCreateGoal && (
-            <motion.form
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              onSubmit={handleCreateGoal}
-              className="card-playful p-3 mb-3 space-y-2 overflow-hidden"
-            >
-              <input
-                type="text"
-                value={goalName}
-                onChange={(e) => setGoalName(e.target.value)}
-                placeholder="Goal name"
-                required
-                className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <input
-                type="number"
-                value={goalTarget}
-                onChange={(e) => setGoalTarget(e.target.value)}
-                placeholder="Target ₹"
-                min={100}
-                className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <button type="submit" disabled={createGoal.isPending} className="w-full py-2 rounded-lg btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
-                Create Shared Goal 🎯
-              </button>
-            </motion.form>
-          )}
-        </AnimatePresence>
-
-        {circleGoals && circleGoals.length > 0 ? (
-          <div className="space-y-3">
-            {circleGoals.map((g) => (
-              <CircleGoalDetail key={g.id} goal={g} members={members ?? []} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground text-center py-4">No shared goals yet. Create one!</p>
-        )}
+      {/* Tabs */}
+      <div className="flex gap-1 mb-3">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+              activeTab === t.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
+
+      {/* Tab Content */}
+      {activeTab === "goals" && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-foreground">Shared Goals</h3>
+            <button onClick={() => setShowCreateGoal(!showCreateGoal)} className="text-xs font-bold text-primary">
+              {showCreateGoal ? "Cancel" : "+ New Goal"}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showCreateGoal && (
+              <motion.form
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                onSubmit={handleCreateGoal}
+                className="card-playful p-3 mb-3 space-y-2 overflow-hidden"
+              >
+                <input
+                  type="text"
+                  value={goalName}
+                  onChange={(e) => setGoalName(e.target.value)}
+                  placeholder="Goal name"
+                  required
+                  className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <input
+                  type="number"
+                  value={goalTarget}
+                  onChange={(e) => setGoalTarget(e.target.value)}
+                  placeholder="Target ₹"
+                  min={100}
+                  className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <input
+                  type="date"
+                  value={goalDeadline}
+                  onChange={(e) => setGoalDeadline(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <button type="submit" disabled={createGoal.isPending} className="w-full py-2 rounded-lg btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
+                  {createGoal.isPending ? "Creating..." : "Create Shared Goal 🎯"}
+                </button>
+              </motion.form>
+            )}
+          </AnimatePresence>
+
+          {circleGoals && circleGoals.length > 0 ? (
+            <div className="space-y-3">
+              {circleGoals.map((g) => (
+                <CircleGoalDetail key={g.id} goal={g} members={members ?? []} circleId={circle.id} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground text-center py-4">No shared goals yet. Create one! 🤝</p>
+          )}
+        </div>
+      )}
+
+      {activeTab === "leaderboard" && members && deposits && (
+        <CircleLeaderboard deposits={deposits} members={members} circleGoals={circleGoals ?? undefined} />
+      )}
+
+      {activeTab === "activity" && members && deposits && (
+        <CircleActivityLog deposits={deposits} members={members} />
+      )}
 
       {/* Members */}
       <div className="card-playful p-4 mt-4">
-        <h3 className="text-sm font-bold text-foreground mb-2">Members</h3>
-        <div className="space-y-2">
-          {members?.map((m) => {
-            const userTotal = deposits?.filter((d) => d.user_id === m.user_id).reduce((s, d) => s + d.amount, 0) ?? 0;
-            return (
-              <div key={m.id} className="flex items-center justify-between py-1.5 px-2 rounded-lg bg-muted/40">
-                <div className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center text-xs font-bold text-primary">
-                    {m.display_name.charAt(0).toUpperCase()}
-                  </span>
-                  <span className="text-sm font-bold text-foreground">{m.display_name}</span>
+        <h3 className="text-sm font-bold text-foreground mb-2">Members ({members?.length ?? 0})</h3>
+        {membersLoading ? (
+          <div className="flex justify-center py-4">
+            <div className="animate-spin text-xl">🍊</div>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {members?.map((m) => {
+              const userTotal = deposits?.filter((d) => d.user_id === m.user_id).reduce((s, d) => s + d.amount, 0) ?? 0;
+              const isOwner = m.user_id === circle.created_by;
+              return (
+                <div key={m.id} className="flex items-center justify-between py-1.5 px-2 rounded-lg bg-muted/40">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center text-xs font-bold text-primary">
+                      {m.display_name.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="text-sm font-bold text-foreground">{m.display_name}</span>
+                    {isOwner && <span className="text-[9px] text-accent font-bold">👑</span>}
+                  </div>
+                  <span className="text-xs font-semibold text-primary">₹{userTotal.toLocaleString()}</span>
                 </div>
-                <span className="text-xs font-semibold text-primary">₹{userTotal.toLocaleString()}</span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -298,22 +455,29 @@ export default function CirclesPage() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!createName.trim() || !displayName.trim()) return;
-    await createCircle.mutateAsync({ name: createName.trim(), displayName: displayName.trim() });
-    setShowCreate(false);
-    setCreateName("");
-    setDisplayName("");
-    toast({ title: "🎉 Circle created!" });
+    try {
+      const circle = await createCircle.mutateAsync({ name: createName.trim(), displayName: displayName.trim() });
+      setShowCreate(false);
+      setCreateName("");
+      setDisplayName("");
+      toast({ title: "🎉 Circle created!" });
+      // Auto-navigate to the new circle
+      setSelectedCircle(circle);
+    } catch (err: any) {
+      toast({ title: "❌ Error", description: err.message, variant: "destructive" });
+    }
   };
 
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!joinCode.trim() || !joinName.trim()) return;
     try {
-      await joinCircle.mutateAsync({ inviteCode: joinCode.trim(), displayName: joinName.trim() });
+      const circle = await joinCircle.mutateAsync({ inviteCode: joinCode.trim(), displayName: joinName.trim() });
       setShowJoin(false);
       setJoinCode("");
       setJoinName("");
       toast({ title: "🎉 Joined circle!" });
+      setSelectedCircle(circle);
     } catch (err: any) {
       toast({ title: "❌ Error", description: err.message, variant: "destructive" });
     }
