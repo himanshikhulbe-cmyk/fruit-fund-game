@@ -48,6 +48,8 @@ export default function GoalDetail() {
   const isFD = goal ? (goal as any).goal_mode === "fd" : false;
   const isRD = goal ? (goal as any).goal_mode === "rd" : false;
   const fruitTiers = getGoalFruitTiers(goal?.custom_fruit_values, goal?.custom_fruit_emojis);
+  const evolution = goal ? getEvolutionStage(goal.current_amount, goal.target_amount) : null;
+  const currentTierFruit = evolution ? getFruitInfo(evolution.stage, goal?.custom_fruit_values, goal?.custom_fruit_emojis) : null;
 
   // Motivational notifications at milestones
   useEffect(() => {
