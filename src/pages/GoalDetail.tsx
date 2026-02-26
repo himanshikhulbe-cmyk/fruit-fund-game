@@ -45,9 +45,9 @@ export default function GoalDetail() {
 
   const pct = goal && goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
   const isComplete = pct >= 100;
-  const isFD = (goal as any).goal_mode === "fd";
-  const isRD = (goal as any).goal_mode === "rd";
-  const fruitTiers = getGoalFruitTiers(goal.custom_fruit_values, goal.custom_fruit_emojis);
+  const isFD = goal ? (goal as any).goal_mode === "fd" : false;
+  const isRD = goal ? (goal as any).goal_mode === "rd" : false;
+  const fruitTiers = getGoalFruitTiers(goal?.custom_fruit_values, goal?.custom_fruit_emojis);
 
   // Motivational notifications at milestones
   useEffect(() => {
@@ -77,6 +77,18 @@ export default function GoalDetail() {
       toast({ title: "🎉 Goal Complete! 🪙 +5 Tokens!", description: "\"The only way to do great work is to love what you do.\"" });
     }
   }, [pct, goal?.id]);
+
+  if (!goal) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="text-4xl mb-2">🔍</div>
+          <p className="text-muted-foreground font-semibold">Goal not found</p>
+          <button onClick={() => navigate("/")} className="mt-4 text-primary font-bold text-sm">← Back</button>
+        </div>
+      </div>
+    );
+  }
 
   const handleDeposit = async (amount: number) => {
     const result = await deposit.mutateAsync({
