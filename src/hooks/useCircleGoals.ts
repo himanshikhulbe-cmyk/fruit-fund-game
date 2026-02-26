@@ -29,7 +29,8 @@ export function useCircleGoals(circleId: string | undefined) {
       const { data, error } = await supabase
         .from("circle_goals")
         .select("*")
-        .eq("circle_id", circleId!);
+        .eq("circle_id", circleId!)
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data as unknown as CircleGoal[];
     },
@@ -57,10 +58,17 @@ export function useCreateCircleGoal() {
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async ({ circleId, name, targetAmount, icon }: { circleId: string; name: string; targetAmount: number; icon: string }) => {
+    mutationFn: async ({ circleId, name, targetAmount, icon, deadline }: { circleId: string; name: string; targetAmount: number; icon: string; deadline?: string }) => {
       const { data, error } = await supabase
         .from("circle_goals")
-        .insert({ circle_id: circleId, name, target_amount: targetAmount, icon, created_by: user!.id } as any)
+        .insert({
+          circle_id: circleId,
+          name,
+          target_amount: targetAmount,
+          icon,
+          created_by: user!.id,
+          ...(deadline ? { deadline } : {}),
+        } as any)
         .select()
         .single();
       if (error) throw error;
@@ -76,21 +84,34 @@ export function useContributeToCircleGoal() {
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async ({ circleGoalId, amount }: { circleGoalId: string; amount: number }) => {
-      // Add contribution
+    mutationFn: async ({ circleGoalId, amount, circleId }: { circleGoalId: string; amount: number; circleId: string }) => {
+      // Add contribution record
       const { error } = await supabase.from("circle_goal_contributions").insert({
         circle_goal_id: circleGoalId,
         user_id: user!.id,
         amount,
       } as any);
       if (error) throw error;
-      // Update goal total
-      const { data: goal } = await supabase.from("circle_goals").select("current_amount").eq("id", circleGoalId).single();
-      await supabase.from("circle_goals").update({ current_amount: (goal?.current_amount || 0) + amount } as any).eq("id", circleGoalId);
+
+      // Update goal total atomically
+      const { data: goal } = await supabase
+        .from("circle_goals")
+        .select("current_amount")
+        .eq("id", circleGoalId)
+        .single();
+      
+      const newAmount = (goal?.current_amount || 0) + amount;
+      await supabase
+        .from("circle_goals")
+        .update({ current_amount: newAmount } as any)
+        .eq("id", circleGoalId);
+
+      return { newAmount };
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["circle-goals"] });
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ["circle-goals", vars.circleId] });
       qc.invalidateQueries({ queryKey: ["circle-goal-contributions"] });
+      qc.invalidateQueries({ queryKey: ["circle-deposits"] });
     },
   });
 }

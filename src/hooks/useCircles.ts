@@ -31,36 +31,30 @@ export function useMyCircles() {
   return useQuery({
     queryKey: ["circles", user?.id],
     queryFn: async () => {
-      // Get circles where user is a member
-      const { data: memberships } = await supabase
+      // First get all circle_ids where user is a member
+      const { data: memberships, error: memErr } = await supabase
         .from("circle_members")
         .select("circle_id")
         .eq("user_id", user!.id);
-      
-      const circleIds = memberships?.map((m: any) => m.circle_id) ?? [];
-      
-      // Also get circles created by user
-      const { data: created } = await supabase
-        .from("circles")
-        .select("*")
-        .eq("created_by", user!.id);
-      
-      let circles = (created ?? []) as Circle[];
-      
-      if (circleIds.length > 0) {
-        const { data: joined } = await supabase
+      if (memErr) throw memErr;
+
+      const circleIds = memberships?.map((m) => m.circle_id) ?? [];
+      if (circleIds.length === 0) {
+        // Also check circles created by user (creator auto-joins, but handle edge case)
+        const { data: created, error: crErr } = await supabase
           .from("circles")
           .select("*")
-          .in("id", circleIds);
-        const joinedCircles = (joined ?? []) as Circle[];
-        // Merge without duplicates
-        const ids = new Set(circles.map((c) => c.id));
-        for (const c of joinedCircles) {
-          if (!ids.has(c.id)) circles.push(c);
-        }
+          .eq("created_by", user!.id);
+        if (crErr) throw crErr;
+        return (created ?? []) as Circle[];
       }
-      
-      return circles;
+
+      const { data: circles, error } = await supabase
+        .from("circles")
+        .select("*")
+        .in("id", circleIds);
+      if (error) throw error;
+      return (circles ?? []) as Circle[];
     },
     enabled: !!user,
   });
@@ -102,23 +96,28 @@ export function useCreateCircle() {
   const { user } = useAuth();
   return useMutation({
     mutationFn: async ({ name, displayName }: { name: string; displayName: string }) => {
+      // Create circle
       const { data: circle, error } = await supabase
         .from("circles")
         .insert({ name, created_by: user!.id })
         .select()
         .single();
       if (error) throw error;
-      
-      // Auto-join as member
-      await supabase.from("circle_members").insert({
+
+      // Auto-join creator as member
+      const { error: joinErr } = await supabase.from("circle_members").insert({
         circle_id: circle.id,
         user_id: user!.id,
         display_name: displayName,
       });
-      
+      if (joinErr) throw joinErr;
+
       return circle as Circle;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["circles"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["circles"] });
+      qc.invalidateQueries({ queryKey: ["circle-members"] });
+    },
   });
 }
 
@@ -127,13 +126,22 @@ export function useJoinCircle() {
   const { user } = useAuth();
   return useMutation({
     mutationFn: async ({ inviteCode, displayName }: { inviteCode: string; displayName: string }) => {
-      const { data: circle, error: findError } = await supabase
-        .from("circles")
-        .select("*")
-        .eq("invite_code", inviteCode.trim())
-        .single();
-      if (findError || !circle) throw new Error("Invalid invite code");
+      // Use security definer function to find circle (bypasses RLS)
+      const { data: circles, error: findError } = await supabase
+        .rpc("find_circle_by_invite_code", { _invite_code: inviteCode.trim() });
       
+      if (findError) throw new Error("Could not look up invite code");
+      if (!circles || circles.length === 0) throw new Error("Invalid invite code");
+      
+      const circle = circles[0];
+
+      // Check if already a member using security definer
+      const { data: isMember } = await supabase
+        .rpc("is_circle_member", { _circle_id: circle.id, _user_id: user!.id });
+      
+      if (isMember) throw new Error("You're already a member of this circle");
+
+      // Join
       const { error } = await supabase.from("circle_members").insert({
         circle_id: circle.id,
         user_id: user!.id,
@@ -143,7 +151,7 @@ export function useJoinCircle() {
         if (error.code === "23505") throw new Error("Already a member");
         throw error;
       }
-      
+
       return circle as Circle;
     },
     onSuccess: () => {
@@ -167,6 +175,7 @@ export function useLogCircleDeposit() {
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["circle-deposits", vars.circleId] });
+      qc.invalidateQueries({ queryKey: ["circle-members", vars.circleId] });
     },
   });
 }
