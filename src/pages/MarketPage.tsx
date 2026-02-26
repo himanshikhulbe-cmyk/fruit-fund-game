@@ -5,17 +5,34 @@ import BottomNav from "@/components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
-const MARKET_ITEMS = [
-  { id: "golden_cherry", type: "golden", name: "Golden Cherry", emoji: "🍒✨", cost: 5, category: "Golden" },
-  { id: "golden_strawberry", type: "golden", name: "Golden Strawberry", emoji: "🍓✨", cost: 8, category: "Golden" },
-  { id: "golden_orange", type: "golden", name: "Golden Orange", emoji: "🍊✨", cost: 10, category: "Golden" },
-  { id: "golden_mango", type: "golden", name: "Golden Mango", emoji: "🥭✨", cost: 15, category: "Golden" },
-  { id: "fusion_apple_peach", type: "fusion", name: "Apple Peach Fusion", emoji: "🍎🍑", cost: 12, category: "Fusion" },
-  { id: "fusion_rasp_guava", type: "fusion", name: "Raspberry Guava", emoji: "🫐🍈", cost: 12, category: "Fusion" },
-  { id: "exotic_starfruit", type: "exotic", name: "Starfruit", emoji: "⭐🍈", cost: 20, category: "Exotic" },
-  { id: "exotic_custard", type: "exotic", name: "Custard Apple", emoji: "🍏🧁", cost: 18, category: "Exotic" },
-  { id: "exotic_mangosteen", type: "exotic", name: "Mangosteen", emoji: "🟣🍇", cost: 22, category: "Exotic" },
-  { id: "exotic_passion", type: "exotic", name: "Raspberry Passionfruit", emoji: "🫐🧡", cost: 25, category: "Exotic" },
+import goldenSetImg from "@/assets/fruits/golden-set.png";
+import starfruitImg from "@/assets/fruits/starfruit.png";
+import peachImg from "@/assets/fruits/peach.png";
+import mangosteenImg from "@/assets/fruits/mangosteen.png";
+import custardAppleImg from "@/assets/fruits/custard-apple.png";
+import grapeImg from "@/assets/fruits/grape.png";
+
+interface MarketItem {
+  id: string;
+  type: string;
+  name: string;
+  emoji: string;
+  image?: string;
+  cost: number;
+  category: string;
+}
+
+const MARKET_ITEMS: MarketItem[] = [
+  { id: "golden_cherry", type: "golden", name: "Golden Cherry", emoji: "🍒✨", image: goldenSetImg, cost: 5, category: "Golden" },
+  { id: "golden_strawberry", type: "golden", name: "Golden Strawberry", emoji: "🍓✨", image: goldenSetImg, cost: 8, category: "Golden" },
+  { id: "golden_orange", type: "golden", name: "Golden Orange", emoji: "🍊✨", image: goldenSetImg, cost: 10, category: "Golden" },
+  { id: "golden_mango", type: "golden", name: "Golden Mango", emoji: "🥭✨", image: goldenSetImg, cost: 15, category: "Golden" },
+  { id: "fusion_apple_peach", type: "fusion", name: "Apple Peach Fusion", emoji: "🍎🍑", image: peachImg, cost: 12, category: "Fusion" },
+  { id: "fusion_rasp_guava", type: "fusion", name: "Raspberry Guava", emoji: "🫐🍈", image: grapeImg, cost: 12, category: "Fusion" },
+  { id: "exotic_starfruit", type: "exotic", name: "Starfruit", emoji: "⭐🍈", image: starfruitImg, cost: 20, category: "Exotic" },
+  { id: "exotic_custard", type: "exotic", name: "Custard Apple", emoji: "🍏🧁", image: custardAppleImg, cost: 18, category: "Exotic" },
+  { id: "exotic_mangosteen", type: "exotic", name: "Mangosteen", emoji: "🟣🍇", image: mangosteenImg, cost: 22, category: "Exotic" },
+  { id: "exotic_passion", type: "exotic", name: "Raspberry Passionfruit", emoji: "🫐🧡", image: grapeImg, cost: 25, category: "Exotic" },
 ];
 
 export default function MarketPage() {
@@ -29,7 +46,7 @@ export default function MarketPage() {
   const categories = ["All", "Golden", "Fusion", "Exotic"];
   const filtered = filter === "All" ? MARKET_ITEMS : MARKET_ITEMS.filter((i) => i.category === filter);
 
-  const handlePurchase = async (item: typeof MARKET_ITEMS[0]) => {
+  const handlePurchase = async (item: MarketItem) => {
     if (balance < item.cost) {
       toast({ title: "Not enough tokens!", description: `Need ${item.cost} tokens, you have ${balance}.`, variant: "destructive" });
       return;
@@ -90,7 +107,15 @@ export default function MarketPage() {
                 transition={{ delay: i * 0.05 }}
                 className="card-playful p-3 flex flex-col items-center text-center"
               >
-                <span className="text-3xl mb-1">{item.emoji}</span>
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-14 h-14 object-contain mb-1 rounded-lg"
+                  />
+                ) : (
+                  <span className="text-3xl mb-1">{item.emoji}</span>
+                )}
                 <p className="text-xs font-bold text-foreground">{item.name}</p>
                 <p className="text-[10px] text-muted-foreground font-semibold mb-2">🪙 {item.cost} tokens</p>
                 {owned > 0 && <p className="text-[10px] text-accent font-bold mb-1">Owned: {owned}</p>}
