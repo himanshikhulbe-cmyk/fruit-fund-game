@@ -11,6 +11,7 @@ import starfruitImg from "@/assets/fruits/starfruit.png";
 import peachImg from "@/assets/fruits/peach.png";
 import custardAppleImg from "@/assets/fruits/custard-apple.png";
 import grapeImg from "@/assets/fruits/grape.png";
+import goldenGuavaImg from "@/assets/fruits/golden-guava.png";
 
 interface MarketItem {
   id: string;
