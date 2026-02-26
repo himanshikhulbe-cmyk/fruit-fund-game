@@ -90,8 +90,10 @@ This project is built with:
 ## 🎯 FruitFund Demo Flow
 
 **1️⃣ User creates a goal + selects fruit type**
--Enters:Goal name, Target amount, Deadline, Short-term / Long-term
--Optional: Choose Flexible / FD / RD mode
+
+Enters:Goal name, Target amount, Deadline, Short-term / Long-term
+
+Optional: Choose Flexible / FD / RD mode
 
 **2️⃣ Makes first deposit**
 
