@@ -64,15 +64,15 @@ This project is built with:
 •✅ Gamified Savings Dashboard
 •✅ Smart Goal Creation System (short/long term goals w/ deadlines, categories & priority tags.)
 •✅ Fruit Evolution Mechanics
-✅ Milestone Token Rewards
-✅ Fruit Market with Rare Variants (golden fruits)
-✅ FriendFund (Shared Savings Goals)
-✅ Circles with Leaderboard (Compete w/ friends)
-✅ FD & RD Simulation Mode (Lock & Grow Mode)
-✅ Achievement Vault (Financial Resume)
-✅ Wishlist Integration
-✅ Motivational Smart Notifications 
-✅ Profile Analytics Dashboard
+•✅ Milestone Token Rewards
+•✅ Fruit Market with Rare Variants (golden fruits)
+•✅ FriendFund (Shared Savings Goals)
+•✅ Circles with Leaderboard (Compete w/ friends)
+•✅ FD & RD Simulation Mode (Lock & Grow Mode)
+•✅ Achievement Vault (Financial Resume)
+•✅ Wishlist Integration
+•✅ Motivational Smart Notifications 
+•✅ Profile Analytics Dashboard
   
 ## How can I deploy this project?
 
