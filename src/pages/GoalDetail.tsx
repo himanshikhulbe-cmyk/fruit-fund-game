@@ -42,19 +42,8 @@ export default function GoalDetail() {
   const awardedRef = useRef<Set<string>>(new Set());
 
   const goal = goals?.find((g) => g.id === id);
-  if (!goal) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="text-4xl mb-2">🔍</div>
-          <p className="text-muted-foreground font-semibold">Goal not found</p>
-          <button onClick={() => navigate("/")} className="mt-4 text-primary font-bold text-sm">← Back</button>
-        </div>
-      </div>
-    );
-  }
 
-  const pct = goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
+  const pct = goal && goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
   const isComplete = pct >= 100;
   const isFD = (goal as any).goal_mode === "fd";
   const isRD = (goal as any).goal_mode === "rd";
