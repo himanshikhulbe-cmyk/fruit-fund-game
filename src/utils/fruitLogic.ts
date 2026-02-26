@@ -186,3 +186,35 @@ export function withdrawFromFruits(
 export function totalFruitValue(fruits: FruitData[]): number {
   return fruits.filter((f) => !f.is_special).reduce((sum, f) => sum + f.value, 0);
 }
+
+// Evolution stage based on precise progress percentage
+// Tier 1 → 0–25%, Tier 2 → 25–50%, Tier 3 → 50–75%, Tier 4 → 75–100%
+export interface EvolutionInfo {
+  stage: number;       // 1-4
+  label: string;
+  progressPct: number; // exact decimal percentage
+  nextStageAt: number; // percentage needed for next stage
+}
+
+export function getEvolutionStage(currentAmount: number, targetAmount: number): EvolutionInfo {
+  if (targetAmount <= 0) return { stage: 1, label: "Seedling 🌱", progressPct: 0, nextStageAt: 25 };
+  
+  const pct = (currentAmount / targetAmount) * 100; // precise, no rounding
+  
+  if (pct >= 75) return { stage: 4, label: "Blooming 🌸", progressPct: pct, nextStageAt: 100 };
+  if (pct >= 50) return { stage: 3, label: "Growing 🌿", progressPct: pct, nextStageAt: 75 };
+  if (pct >= 25) return { stage: 2, label: "Sprouting 🌾", progressPct: pct, nextStageAt: 50 };
+  return { stage: 1, label: "Seedling 🌱", progressPct: pct, nextStageAt: 25 };
+}
+
+// Map market item names to image asset keys
+export const MARKET_ITEM_IMAGE_MAP: Record<string, string> = {
+  "Golden Cherry": "golden-cherry",
+  "Golden Strawberry": "golden-strawberry",
+  "Apple Peach Fusion": "peach",
+  "Raspberry Guava": "golden-guava",
+  "Starfruit": "starfruit",
+  "Custard Apple": "custard-apple",
+  "Mystical Grapes": "grape",
+  "Golden Fruit": "golden-cherry",
+};
