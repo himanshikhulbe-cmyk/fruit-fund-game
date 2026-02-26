@@ -321,13 +321,21 @@ export default function ProfilePage() {
                         {!inventory || inventory.length === 0 ? (
                           <p className="text-xs text-muted-foreground text-center py-4">No items yet. Visit the Fruit Market! 🏪</p>
                         ) : (
-                          <div className="grid grid-cols-4 gap-2">
-                            {inventory.map((item) => (
-                              <div key={item.id} className="aspect-square flex flex-col items-center justify-center rounded-xl bg-muted/50 border border-border">
-                                <span className="text-2xl">{item.item_emoji}</span>
-                                <span className="text-[8px] text-muted-foreground font-bold mt-0.5 truncate w-full text-center px-1">{item.item_name}</span>
-                              </div>
-                            ))}
+                          <div className="grid grid-cols-3 gap-3">
+                            {inventory.map((item) => {
+                              const imageKey = MARKET_ITEM_IMAGE_MAP[item.item_name];
+                              const imageSrc = imageKey ? COLLECTION_IMAGE_MAP[imageKey] : null;
+                              return (
+                                <div key={item.id} className="aspect-square flex flex-col items-center justify-center rounded-xl bg-muted/50 border border-border p-2">
+                                  {imageSrc ? (
+                                    <img src={imageSrc} alt={item.item_name} className="w-12 h-12 object-contain" />
+                                  ) : (
+                                    <span className="text-2xl">{item.item_emoji}</span>
+                                  )}
+                                  <span className="text-[8px] text-muted-foreground font-bold mt-1 truncate w-full text-center px-1">{item.item_name}</span>
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
