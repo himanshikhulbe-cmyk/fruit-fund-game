@@ -14,7 +14,7 @@ interface DepositModalProps {
 
 const QUICK_AMOUNTS = [25, 50, 100, 200];
 
-export default function DepositModal({ onClose, onDeposit, loading }: DepositModalProps) {
+export default function DepositModal({ onClose, onDeposit, loading, evolutionLabel, evolutionStage, fruitTierEmoji, fruitTierName }: DepositModalProps) {
   const [amount, setAmount] = useState("");
   const [step, setStep] = useState<"amount" | "payment">("amount");
 
