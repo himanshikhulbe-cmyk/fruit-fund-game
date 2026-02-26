@@ -157,11 +157,14 @@ Clear call-to-action buttons (Deposit, Analyze, Join Circle, Upgrade Fruit)
 
 ## ⚡ Performance
 
-Fast load times (<2s)
 Smooth 60fps fruit evolution animations
+
 Optimized bundle size
+
 Efficient state management
+
 No unnecessary external API calls (demo-safe mode available)
+
 Instant leaderboard recalculations
 
 ## 🔗 Share Your Live Link
@@ -193,12 +196,19 @@ Complete a goal → Achievement Vault
 ## 📊 What Judges Will See
 
 Professional landing page
+
 Gamified savings dashboard
+
 Smooth fruit evolution animation
+
 Interactive Savings Health Report
+
 20 financial resilience scenarios
+
 Real-time leaderboard
+
 Achievement Vault (financial resume)
+
 Personalized financial recommendations
 
 ## 🏆 Why This Demo Works
