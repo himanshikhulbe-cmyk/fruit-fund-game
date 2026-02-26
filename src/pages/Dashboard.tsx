@@ -135,6 +135,27 @@ export default function Dashboard() {
           </motion.div>
         ) : null}
 
+      {/* FriendFund Quick Access */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          onClick={() => navigate("/circles")}
+          className="card-playful p-4 cursor-pointer hover:shadow-float transition-all active:scale-[0.98] mt-6 border-2 border-secondary/20"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">👫</span>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-foreground">FriendFund</h3>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-secondary/15 text-secondary">Circles</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Save together with friends & family</p>
+            </div>
+            <span className="text-sm font-black text-secondary">→</span>
+          </div>
+        </motion.div>
+
         {/* Stats */}
         {goals && goals.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
