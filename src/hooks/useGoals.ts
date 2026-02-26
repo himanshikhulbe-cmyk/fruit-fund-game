@@ -37,7 +37,7 @@ export function useGoals() {
         .order("priority", { ascending: true })
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return data as Goal[];
+      return data as unknown as Goal[];
     },
     enabled: !!user,
   });

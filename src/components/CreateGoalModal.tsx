@@ -42,6 +42,13 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
   const [isFunFund, setIsFunFund] = useState(false);
   const [showFruitCustom, setShowFruitCustom] = useState(false);
 
+  // Goal type & mode
+  const [goalType, setGoalType] = useState<"short" | "long">("short");
+  const [goalMode, setGoalMode] = useState<"flexible" | "fd" | "rd">("flexible");
+  const [fdDuration, setFdDuration] = useState<number>(3);
+  const [rdMonthly, setRdMonthly] = useState("");
+  const [rdDuration, setRdDuration] = useState<number>(6);
+
   // Custom fruit values
   const defaultValues: CustomFruitValues = {};
   FRUIT_TIERS.forEach((ft) => { defaultValues[ft.tier] = ft.value; });
@@ -90,11 +97,24 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
     const isDefaultValues = FRUIT_TIERS.every((ft) => fruitValues[ft.tier] === ft.value);
     const isDefaultEmojis = FRUIT_TIERS.every((ft, i) => fruitEmojis[i] === ft.emoji);
 
+    // Calculate deadline for FD/RD modes
+    let finalDeadline = !isFunFund && deadline ? format(deadline, "yyyy-MM-dd") : undefined;
+    if (goalMode === "fd" && !isFunFund) {
+      const d = new Date();
+      d.setMonth(d.getMonth() + fdDuration);
+      finalDeadline = format(d, "yyyy-MM-dd");
+    }
+    if (goalMode === "rd" && !isFunFund) {
+      const d = new Date();
+      d.setMonth(d.getMonth() + rdDuration);
+      finalDeadline = format(d, "yyyy-MM-dd");
+    }
+
     const goal = await createGoal.mutateAsync({
       name,
       target_amount: targetNum,
       icon,
-      deadline: !isFunFund && deadline ? format(deadline, "yyyy-MM-dd") : undefined,
+      deadline: finalDeadline,
       priority: isFunFund ? 99 : priority,
       motivation_text: motivationText.trim() || undefined,
       is_fun_fund: isFunFund,
@@ -177,30 +197,103 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
 
           {!isFunFund && (
             <>
+              {/* Goal Type Toggle */}
+              <div>
+                <label className="text-xs font-bold text-muted-foreground mb-1 block">Goal Type</label>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setGoalType("short")}
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${goalType === "short" ? "border-primary bg-primary/10 text-primary" : "bg-muted text-muted-foreground border-border"}`}>
+                    ⚡ Short Term
+                  </button>
+                  <button type="button" onClick={() => setGoalType("long")}
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${goalType === "long" ? "border-primary bg-primary/10 text-primary" : "bg-muted text-muted-foreground border-border"}`}>
+                    📅 Long Term
+                  </button>
+                </div>
+              </div>
+
+              {/* Goal Mode */}
+              <div>
+                <label className="text-xs font-bold text-muted-foreground mb-1 block">Savings Mode</label>
+                <div className="flex gap-2">
+                  {[
+                    { id: "flexible" as const, label: "Flexible", icon: "🔄" },
+                    { id: "fd" as const, label: "Fixed Deposit", icon: "🔒" },
+                    { id: "rd" as const, label: "Recurring", icon: "📆" },
+                  ].map((m) => (
+                    <button key={m.id} type="button" onClick={() => setGoalMode(m.id)}
+                      className={`flex-1 py-2 rounded-lg text-[10px] font-bold border-2 transition-all ${goalMode === m.id ? "border-primary bg-primary/10 text-primary" : "bg-muted text-muted-foreground border-border"}`}>
+                      {m.icon} {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* FD Duration */}
+              {goalMode === "fd" && (
+                <div className="bg-muted/50 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-foreground">🔒 Fixed Deposit Mode</p>
+                  <p className="text-[10px] text-muted-foreground">Lock amount, no withdrawal before maturity. Earn mystical fruit on maturity!</p>
+                  <div className="flex gap-2">
+                    {[3, 6, 12].map((d) => (
+                      <button key={d} type="button" onClick={() => setFdDuration(d)}
+                        className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${fdDuration === d ? "border-accent bg-accent/10 text-accent" : "bg-muted text-muted-foreground border-border"}`}>
+                        {d} months
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* RD Details */}
+              {goalMode === "rd" && (
+                <div className="bg-muted/50 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-foreground">📆 Recurring Deposit Mode</p>
+                  <p className="text-[10px] text-muted-foreground">Set monthly contribution. Missed payment = streak break.</p>
+                  <input
+                    type="number"
+                    value={rdMonthly}
+                    onChange={(e) => setRdMonthly(e.target.value)}
+                    placeholder="Monthly amount (₹)"
+                    className="w-full px-3 py-2 rounded-lg bg-card border border-border text-foreground text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                  <div className="flex gap-2">
+                    {[6, 12, 24].map((d) => (
+                      <button key={d} type="button" onClick={() => setRdDuration(d)}
+                        className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 transition-all ${rdDuration === d ? "border-accent bg-accent/10 text-accent" : "bg-muted text-muted-foreground border-border"}`}>
+                        {d} months
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Amount (₹)</label>
                 <input type="number" value={target} onChange={(e) => setTarget(e.target.value)} min={100} required
                   className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary" />
               </div>
 
-              {/* Deadline */}
-              <div>
-                <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Deadline (optional)</label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button type="button" variant="outline" className={cn("w-full justify-start text-left font-semibold text-sm", !deadline && "text-muted-foreground")}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {deadline ? format(deadline, "PPP") : "Pick a deadline"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={deadline} onSelect={setDeadline} disabled={(date) => date < new Date()} initialFocus
-                      captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30}
-                      classNames={{ caption_label: "hidden", caption_dropdowns: "flex gap-2", nav: "hidden" }}
-                      className={cn("p-3 pointer-events-auto")} />
-                  </PopoverContent>
-                </Popover>
-              </div>
+              {/* Deadline - only for flexible mode */}
+              {goalMode === "flexible" && (
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground mb-1 block">Target Deadline (optional)</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button type="button" variant="outline" className={cn("w-full justify-start text-left font-semibold text-sm", !deadline && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {deadline ? format(deadline, "PPP") : "Pick a deadline"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={deadline} onSelect={setDeadline} disabled={(date) => date < new Date()} initialFocus
+                        captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30}
+                        classNames={{ caption_label: "hidden", caption_dropdowns: "flex gap-2", nav: "hidden" }}
+                        className={cn("p-3 pointer-events-auto")} />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              )}
 
               {/* Priority */}
               <div>
@@ -298,7 +391,7 @@ export default function CreateGoalModal({ onClose }: CreateGoalModalProps) {
           )}
 
           <button type="submit" disabled={isSubmitting} className="w-full py-3 rounded-xl btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
-            {isSubmitting ? "Creating..." : isFunFund ? "Create Fun Fund 🎉" : "Create Goal 🌱"}
+            {isSubmitting ? "Creating..." : isFunFund ? "Create Fun Fund 🎉" : goalMode === "fd" ? "Lock Fixed Deposit 🔒" : goalMode === "rd" ? "Start Recurring Deposit 📆" : "Create Goal 🌱"}
           </button>
         </form>
       </motion.div>

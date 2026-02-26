@@ -8,6 +8,8 @@ import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import GoalDetail from "./pages/GoalDetail";
 import CirclesPage from "./pages/CirclesPage";
+import ProfilePage from "./pages/ProfilePage";
+import MarketPage from "./pages/MarketPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +53,8 @@ const App = () => (
               <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/goal/:id" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
               <Route path="/circles" element={<ProtectedRoute><CirclesPage /></ProtectedRoute>} />
+              <Route path="/market" element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
