@@ -50,6 +50,18 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
 ## What technologies are used for this project?
 
 This project is built with:
@@ -192,21 +204,17 @@ Personalized financial recommendations
 ## 🏆 Why This Demo Works
 
 ✅ Shows you can build a functional fintech prototype
+
 ✅ Proves gamified savings is technically feasible
+
 ✅ Demonstrates strong UX & behavioral design thinking
+
 ✅ Blends finance + psychology + gamification
+
 ✅ Judges can click through and experience the product
+
 ✅ Memorable visual system (evolving fruits + report score)
+
 ✅ Competitive social element (Circles + Leaderboard)
   
-## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
