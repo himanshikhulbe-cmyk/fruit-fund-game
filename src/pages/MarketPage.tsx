@@ -11,6 +11,7 @@ import starfruitImg from "@/assets/fruits/starfruit.png";
 import peachImg from "@/assets/fruits/peach.png";
 import custardAppleImg from "@/assets/fruits/custard-apple.png";
 import grapeImg from "@/assets/fruits/grape.png";
+import goldenGuavaImg from "@/assets/fruits/golden-guava.png";
 
 interface MarketItem {
   id: string;
@@ -26,7 +27,7 @@ const MARKET_ITEMS: MarketItem[] = [
   { id: "golden_cherry", type: "golden", name: "Golden Cherry", emoji: "🍒✨", image: goldenCherryImg, cost: 5, category: "Golden" },
   { id: "golden_strawberry", type: "golden", name: "Golden Strawberry", emoji: "🍓✨", image: goldenStrawberryImg, cost: 8, category: "Golden" },
   { id: "fusion_apple_peach", type: "fusion", name: "Apple Peach Fusion", emoji: "🍎🍑", image: peachImg, cost: 12, category: "Fusion" },
-  
+  { id: "fusion_rasp_guava", type: "fusion", name: "Raspberry Guava", emoji: "🫐🍈", image: goldenGuavaImg, cost: 12, category: "Fusion" },
   { id: "exotic_starfruit", type: "exotic", name: "Starfruit", emoji: "⭐🍈", image: starfruitImg, cost: 20, category: "Exotic" },
   { id: "exotic_custard", type: "exotic", name: "Custard Apple", emoji: "🍏🧁", image: custardAppleImg, cost: 18, category: "Exotic" },
   { id: "exotic_mystical_grapes", type: "exotic", name: "Mystical Grapes", emoji: "🍇✨", image: grapeImg, cost: 22, category: "Exotic" },
