@@ -71,7 +71,9 @@ This project is built with:
 •✅ FD & RD Simulation Mode (Lock & Grow Mode)
 •✅ Achievement Vault (Financial Resume)
 •✅ Wishlist Integration
+
 •✅ Motivational Smart Notifications 
+
 •✅ Profile Analytics Dashboard
   
 ## How can I deploy this project?
