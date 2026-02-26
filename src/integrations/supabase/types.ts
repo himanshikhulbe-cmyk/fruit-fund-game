@@ -300,11 +300,14 @@ export type Database = {
         Row: {
           created_at: string
           current_amount: number
+          custom_fruit_emojis: Json | null
+          custom_fruit_values: Json | null
           deadline: string | null
           goal_mode: string
           goal_type: string
           icon: string
           id: string
+          is_fun_fund: boolean
           motivation_text: string | null
           name: string
           priority: number
@@ -314,11 +317,14 @@ export type Database = {
         Insert: {
           created_at?: string
           current_amount?: number
+          custom_fruit_emojis?: Json | null
+          custom_fruit_values?: Json | null
           deadline?: string | null
           goal_mode?: string
           goal_type?: string
           icon?: string
           id?: string
+          is_fun_fund?: boolean
           motivation_text?: string | null
           name: string
           priority?: number
@@ -328,11 +334,14 @@ export type Database = {
         Update: {
           created_at?: string
           current_amount?: number
+          custom_fruit_emojis?: Json | null
+          custom_fruit_values?: Json | null
           deadline?: string | null
           goal_mode?: string
           goal_type?: string
           icon?: string
           id?: string
+          is_fun_fund?: boolean
           motivation_text?: string | null
           name?: string
           priority?: number
