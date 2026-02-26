@@ -402,7 +402,15 @@ export default function GoalDetail() {
 
       <AnimatePresence>
         {showDeposit && (
-          <DepositModal onClose={() => setShowDeposit(false)} onDeposit={handleDeposit} loading={deposit.isPending} />
+          <DepositModal
+            onClose={() => setShowDeposit(false)}
+            onDeposit={handleDeposit}
+            loading={deposit.isPending}
+            evolutionLabel={evolution?.label}
+            evolutionStage={evolution?.stage}
+            fruitTierEmoji={currentTierFruit?.emoji}
+            fruitTierName={currentTierFruit?.name}
+          />
         )}
         {showWithdraw && (
           <WithdrawModal
