@@ -5,10 +5,10 @@ import BottomNav from "@/components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
-import goldenSetImg from "@/assets/fruits/golden-set.png";
+import goldenCherryImg from "@/assets/fruits/golden-cherry.png";
+import goldenStrawberryImg from "@/assets/fruits/golden-strawberry.png";
 import starfruitImg from "@/assets/fruits/starfruit.png";
 import peachImg from "@/assets/fruits/peach.png";
-import mangosteenImg from "@/assets/fruits/mangosteen.png";
 import custardAppleImg from "@/assets/fruits/custard-apple.png";
 import grapeImg from "@/assets/fruits/grape.png";
 
@@ -23,16 +23,13 @@ interface MarketItem {
 }
 
 const MARKET_ITEMS: MarketItem[] = [
-  { id: "golden_cherry", type: "golden", name: "Golden Cherry", emoji: "🍒✨", image: goldenSetImg, cost: 5, category: "Golden" },
-  { id: "golden_strawberry", type: "golden", name: "Golden Strawberry", emoji: "🍓✨", image: goldenSetImg, cost: 8, category: "Golden" },
-  { id: "golden_orange", type: "golden", name: "Golden Orange", emoji: "🍊✨", image: goldenSetImg, cost: 10, category: "Golden" },
-  { id: "golden_mango", type: "golden", name: "Golden Mango", emoji: "🥭✨", image: goldenSetImg, cost: 15, category: "Golden" },
+  { id: "golden_cherry", type: "golden", name: "Golden Cherry", emoji: "🍒✨", image: goldenCherryImg, cost: 5, category: "Golden" },
+  { id: "golden_strawberry", type: "golden", name: "Golden Strawberry", emoji: "🍓✨", image: goldenStrawberryImg, cost: 8, category: "Golden" },
   { id: "fusion_apple_peach", type: "fusion", name: "Apple Peach Fusion", emoji: "🍎🍑", image: peachImg, cost: 12, category: "Fusion" },
   { id: "fusion_rasp_guava", type: "fusion", name: "Raspberry Guava", emoji: "🫐🍈", image: grapeImg, cost: 12, category: "Fusion" },
   { id: "exotic_starfruit", type: "exotic", name: "Starfruit", emoji: "⭐🍈", image: starfruitImg, cost: 20, category: "Exotic" },
   { id: "exotic_custard", type: "exotic", name: "Custard Apple", emoji: "🍏🧁", image: custardAppleImg, cost: 18, category: "Exotic" },
-  { id: "exotic_mangosteen", type: "exotic", name: "Mangosteen", emoji: "🟣🍇", image: mangosteenImg, cost: 22, category: "Exotic" },
-  { id: "exotic_passion", type: "exotic", name: "Raspberry Passionfruit", emoji: "🫐🧡", image: grapeImg, cost: 25, category: "Exotic" },
+  { id: "exotic_mystical_grapes", type: "exotic", name: "Mystical Grapes", emoji: "🍇✨", image: grapeImg, cost: 22, category: "Exotic" },
 ];
 
 export default function MarketPage() {
