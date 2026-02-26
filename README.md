@@ -89,13 +89,13 @@ This project is built with:
 
 ## 🎯 FruitFund Demo Flow
 
-1️⃣ User creates a goal + selects fruit type
-Enters:
-Goal name, Target amount, Deadline, Short-term / Long-term
+**1️⃣ User creates a goal + selects fruit type**
+
+Enters:Goal name, Target amount, Deadline, Short-term / Long-term
 
 Optional: Choose Flexible / FD / RD mode
 
-2️⃣ Makes first deposit
+**2️⃣ Makes first deposit**
 
 ✨ Fruit appears and starts evolving.
 
@@ -103,13 +103,13 @@ Progress bar updates in real time.
 
 Streak counter activates.
 
-3️⃣ Reaches 50% milestone
+**3️⃣ Reaches 50% milestone**
 
 🎉 Milestone animation plays (fruit glow + token reward).
 
 Tokens credited once (cannot be claimed again).
  
-4️⃣Completes Goal
+**4️⃣Completes Goal**
 
 🏆 Achievement unlocked
 
@@ -118,12 +118,6 @@ Goal moves to Achievement Vault
 Leaderboard updates (if in Circle)
 
 
-
-🏆 Achievement unlocked
-
-Goal moves to Achievement Vault
-
-Leaderboard updates (if in Circle)
   
 ## How can I deploy this project?
 
