@@ -6,6 +6,10 @@ interface DepositModalProps {
   onClose: () => void;
   onDeposit: (amount: number) => void;
   loading: boolean;
+  evolutionLabel?: string;
+  evolutionStage?: number;
+  fruitTierEmoji?: string;
+  fruitTierName?: string;
 }
 
 const QUICK_AMOUNTS = [25, 50, 100, 200];
