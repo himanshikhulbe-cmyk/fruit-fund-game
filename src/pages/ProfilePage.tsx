@@ -3,9 +3,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { useRedeemedCodes, useRedeemCode, useUserTokens, useMarketInventory, useWishlists, useAddWishlistItem, useDeleteWishlistItem, useDraftGoals, useDeleteDraft, useIsPremium } from "@/hooks/useProfile";
+import { MARKET_ITEM_IMAGE_MAP } from "@/utils/fruitLogic";
 import BottomNav from "@/components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+
+import goldenCherryImg from "@/assets/fruits/golden-cherry.png";
+import goldenStrawberryImg from "@/assets/fruits/golden-strawberry.png";
+import starfruitImg from "@/assets/fruits/starfruit.png";
+import peachImg from "@/assets/fruits/peach.png";
+import custardAppleImg from "@/assets/fruits/custard-apple.png";
+import grapeImg from "@/assets/fruits/grape.png";
+import goldenGuavaImg from "@/assets/fruits/golden-guava.png";
+
+const COLLECTION_IMAGE_MAP: Record<string, string> = {
+  "golden-cherry": goldenCherryImg,
+  "golden-strawberry": goldenStrawberryImg,
+  "peach": peachImg,
+  "golden-guava": goldenGuavaImg,
+  "starfruit": starfruitImg,
+  "custard-apple": custardAppleImg,
+  "grape": grapeImg,
+};
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
@@ -302,13 +321,21 @@ export default function ProfilePage() {
                         {!inventory || inventory.length === 0 ? (
                           <p className="text-xs text-muted-foreground text-center py-4">No items yet. Visit the Fruit Market! 🏪</p>
                         ) : (
-                          <div className="grid grid-cols-4 gap-2">
-                            {inventory.map((item) => (
-                              <div key={item.id} className="aspect-square flex flex-col items-center justify-center rounded-xl bg-muted/50 border border-border">
-                                <span className="text-2xl">{item.item_emoji}</span>
-                                <span className="text-[8px] text-muted-foreground font-bold mt-0.5 truncate w-full text-center px-1">{item.item_name}</span>
-                              </div>
-                            ))}
+                          <div className="grid grid-cols-3 gap-3">
+                            {inventory.map((item) => {
+                              const imageKey = MARKET_ITEM_IMAGE_MAP[item.item_name];
+                              const imageSrc = imageKey ? COLLECTION_IMAGE_MAP[imageKey] : null;
+                              return (
+                                <div key={item.id} className="aspect-square flex flex-col items-center justify-center rounded-xl bg-muted/50 border border-border p-2">
+                                  {imageSrc ? (
+                                    <img src={imageSrc} alt={item.item_name} className="w-12 h-12 object-contain" />
+                                  ) : (
+                                    <span className="text-2xl">{item.item_emoji}</span>
+                                  )}
+                                  <span className="text-[8px] text-muted-foreground font-bold mt-1 truncate w-full text-center px-1">{item.item_name}</span>
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </div>

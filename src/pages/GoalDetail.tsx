@@ -14,7 +14,7 @@ import FruitBreakOverlay from "@/components/FruitBreakOverlay";
 import WhyIStartedModal from "@/components/WhyIStartedModal";
 import EditGoalModal from "@/components/EditGoalModal";
 import MysteryFruitToast from "@/components/MysteryFruitToast";
-import { getGoalFruitTiers } from "@/utils/fruitLogic";
+import { getGoalFruitTiers, getEvolutionStage, getFruitInfo } from "@/utils/fruitLogic";
 import { toast } from "@/hooks/use-toast";
 
 export default function GoalDetail() {
@@ -48,6 +48,8 @@ export default function GoalDetail() {
   const isFD = goal ? (goal as any).goal_mode === "fd" : false;
   const isRD = goal ? (goal as any).goal_mode === "rd" : false;
   const fruitTiers = getGoalFruitTiers(goal?.custom_fruit_values, goal?.custom_fruit_emojis);
+  const evolution = goal ? getEvolutionStage(goal.current_amount, goal.target_amount) : null;
+  const currentTierFruit = evolution ? getFruitInfo(evolution.stage, goal?.custom_fruit_values, goal?.custom_fruit_emojis) : null;
 
   // Motivational notifications at milestones
   useEffect(() => {
@@ -400,7 +402,15 @@ export default function GoalDetail() {
 
       <AnimatePresence>
         {showDeposit && (
-          <DepositModal onClose={() => setShowDeposit(false)} onDeposit={handleDeposit} loading={deposit.isPending} />
+          <DepositModal
+            onClose={() => setShowDeposit(false)}
+            onDeposit={handleDeposit}
+            loading={deposit.isPending}
+            evolutionLabel={evolution?.label}
+            evolutionStage={evolution?.stage}
+            fruitTierEmoji={currentTierFruit?.emoji}
+            fruitTierName={currentTierFruit?.name}
+          />
         )}
         {showWithdraw && (
           <WithdrawModal

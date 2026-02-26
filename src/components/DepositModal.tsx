@@ -6,11 +6,15 @@ interface DepositModalProps {
   onClose: () => void;
   onDeposit: (amount: number) => void;
   loading: boolean;
+  evolutionLabel?: string;
+  evolutionStage?: number;
+  fruitTierEmoji?: string;
+  fruitTierName?: string;
 }
 
 const QUICK_AMOUNTS = [25, 50, 100, 200];
 
-export default function DepositModal({ onClose, onDeposit, loading }: DepositModalProps) {
+export default function DepositModal({ onClose, onDeposit, loading, evolutionLabel, evolutionStage, fruitTierEmoji, fruitTierName }: DepositModalProps) {
   const [amount, setAmount] = useState("");
   const [step, setStep] = useState<"amount" | "payment">("amount");
 
@@ -40,7 +44,27 @@ export default function DepositModal({ onClose, onDeposit, loading }: DepositMod
       >
         <div className="w-10 h-1 bg-border rounded-full mx-auto mb-4" />
         <h2 className="text-lg font-black text-foreground mb-1">Deposit 💰</h2>
-        <p className="text-xs text-muted-foreground font-semibold mb-4">₹10 – ₹200 per deposit</p>
+        <p className="text-xs text-muted-foreground font-semibold mb-2">₹10 – ₹200 per deposit</p>
+
+        {/* Evolution & Tier Badge */}
+        {(evolutionLabel || fruitTierEmoji) && (
+          <div className="flex items-center gap-2 mb-4 bg-muted/50 rounded-lg px-3 py-2">
+            {fruitTierEmoji && <span className="text-2xl">{fruitTierEmoji}</span>}
+            <div className="flex-1">
+              {fruitTierName && <p className="text-xs font-bold text-foreground">{fruitTierName}</p>}
+              {evolutionLabel && (
+                <p className="text-[10px] text-muted-foreground font-semibold">
+                  Stage {evolutionStage}: {evolutionLabel}
+                </p>
+              )}
+            </div>
+            {evolutionStage && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/15 text-primary">
+                Tier {evolutionStage}
+              </span>
+            )}
+          </div>
+        )}
 
         {step === "payment" ? (
           <PaymentMethodPicker
