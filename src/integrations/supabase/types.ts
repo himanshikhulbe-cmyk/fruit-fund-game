@@ -46,6 +46,82 @@ export type Database = {
           },
         ]
       }
+      circle_goal_contributions: {
+        Row: {
+          amount: number
+          circle_goal_id: string
+          contributed_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          circle_goal_id: string
+          contributed_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          circle_goal_id?: string
+          contributed_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_goal_contributions_circle_goal_id_fkey"
+            columns: ["circle_goal_id"]
+            isOneToOne: false
+            referencedRelation: "circle_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circle_goals: {
+        Row: {
+          circle_id: string
+          created_at: string
+          created_by: string
+          current_amount: number
+          deadline: string | null
+          icon: string
+          id: string
+          name: string
+          target_amount: number
+        }
+        Insert: {
+          circle_id: string
+          created_at?: string
+          created_by: string
+          current_amount?: number
+          deadline?: string | null
+          icon?: string
+          id?: string
+          name: string
+          target_amount?: number
+        }
+        Update: {
+          circle_id?: string
+          created_at?: string
+          created_by?: string
+          current_amount?: number
+          deadline?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          target_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_goals_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circle_members: {
         Row: {
           circle_id: string
@@ -99,6 +175,57 @@ export type Database = {
           id?: string
           invite_code?: string
           name?: string
+        }
+        Relationships: []
+      }
+      draft_goals: {
+        Row: {
+          custom_fruit_emojis: Json | null
+          custom_fruit_values: Json | null
+          deadline: string | null
+          goal_mode: string | null
+          goal_type: string | null
+          icon: string | null
+          id: string
+          is_fun_fund: boolean | null
+          motivation_text: string | null
+          name: string | null
+          priority: number | null
+          target_amount: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          custom_fruit_emojis?: Json | null
+          custom_fruit_values?: Json | null
+          deadline?: string | null
+          goal_mode?: string | null
+          goal_type?: string | null
+          icon?: string | null
+          id?: string
+          is_fun_fund?: boolean | null
+          motivation_text?: string | null
+          name?: string | null
+          priority?: number | null
+          target_amount?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          custom_fruit_emojis?: Json | null
+          custom_fruit_values?: Json | null
+          deadline?: string | null
+          goal_mode?: string | null
+          goal_type?: string | null
+          icon?: string | null
+          id?: string
+          is_fun_fund?: boolean | null
+          motivation_text?: string | null
+          name?: string | null
+          priority?: number | null
+          target_amount?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -174,6 +301,8 @@ export type Database = {
           created_at: string
           current_amount: number
           deadline: string | null
+          goal_mode: string
+          goal_type: string
           icon: string
           id: string
           motivation_text: string | null
@@ -186,6 +315,8 @@ export type Database = {
           created_at?: string
           current_amount?: number
           deadline?: string | null
+          goal_mode?: string
+          goal_type?: string
           icon?: string
           id?: string
           motivation_text?: string | null
@@ -198,12 +329,128 @@ export type Database = {
           created_at?: string
           current_amount?: number
           deadline?: string | null
+          goal_mode?: string
+          goal_type?: string
           icon?: string
           id?: string
           motivation_text?: string | null
           name?: string
           priority?: number
           target_amount?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      market_inventory: {
+        Row: {
+          id: string
+          item_emoji: string
+          item_name: string
+          item_type: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          item_emoji: string
+          item_name: string
+          item_type: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          item_emoji?: string
+          item_name?: string
+          item_type?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      redeemed_codes: {
+        Row: {
+          code: string
+          id: string
+          redeemed_at: string
+          reward_type: string
+          reward_value: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          id?: string
+          redeemed_at?: string
+          reward_type: string
+          reward_value: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          id?: string
+          redeemed_at?: string
+          reward_type?: string
+          reward_value?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_tokens: {
+        Row: {
+          amount: number
+          created_at: string
+          goal_id: string | null
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          description: string | null
+          goal_id: string | null
+          id: string
+          image_url: string | null
+          link_url: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          goal_id?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          goal_id?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          title?: string
           user_id?: string
         }
         Relationships: []
