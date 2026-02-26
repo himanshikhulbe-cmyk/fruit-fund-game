@@ -62,112 +62,18 @@ This project is built with:
 
 ## ✨ Features Included
 ✅ Gamified Savings Dashboard
-Turn every deposit into fruit evolution. Watch your savings grow visually in real time.
-
-✅ Smart Goal Creation System
-Create short-term or long-term goals with deadlines, categories, and priority tags.
-
+✅ Smart Goal Creation System (short/long term goals w/ deadlines, categories & priority tags.)
 ✅ Fruit Evolution Mechanics
-Savings progress automatically upgrades fruit tiers based on % completion.
-
 ✅ Milestone Token Rewards
-Earn tokens at 50%, 70%, and 100% completion (protected against duplicate claims).
-
-✅ Fruit Market with Rare Variants
-Unlock golden fruits, fusion fruits, and exotic collectibles using earned tokens.
-
+✅ Fruit Market with Rare Variants (golden fruits)
 ✅ FriendFund (Shared Savings Goals)
-Save with friends toward trips, gadgets, or shared goals with contribution tracking.
-
-✅ Circles with Leaderboard
-Compete with friends and view:
-
-Top Saver rankings
-
-Contribution percentages
-
-Current & longest saving streaks
-
-✅ FD & RD Simulation Mode
-Lock & Grow Mode:
-
-Flexible Savings
-
-Fixed Deposit (lock-based reward)
-
-Recurring Deposit (discipline-based streak system)
-
+✅ Circles with Leaderboard (Compete w/ friends)
+✅ FD & RD Simulation Mode (Lock & Grow Mode)
 ✅ Achievement Vault (Financial Resume)
-Completed goals show:
-
-Completion time
-
-Consistency score
-
-Badge earned
-
-Evolution summary
-
-✅ Smart Savings Health Analyzer
-Get a Savings Score, vulnerability rating, and scenario-based financial resilience check.
-
-✅ 20 Real-Life Financial Scenarios
-Test savings against:
-
-Emergencies
-
-Travel
-
-Medical needs
-
-Unexpected expenses
-
-Each marked as:
-Pass / Partial / Fail
-
-✅ Personalized Financial Recommendations
-AI-style suggestions based on:
-
-Streak behavior
-
-Withdrawals
-
-Goal discipline
-
-Completion history
-
 ✅ Wishlist Integration
-Save product links and attach them to goals for stronger motivation.
-
-✅ Draft Goal Auto-Save
-Never lose progress while creating goals.
-
-✅ Realistic Deposit & Withdrawal UI
-Professional card-style payment simulation (no real data stored).
-
-✅ Motivational Smart Notifications
-Celebrate 80% milestones, streak achievements, and goal completion moments.
-
+✅ Motivational Smart Notifications 
 ✅ Profile Analytics Dashboard
-Track:
-
-Total goals created
-
-Completed goals
-
-Missed deadlines
-
-Average consistency
-
-Total tokens earned
-
-✅ Fully Responsive, Mobile-First Design
-Optimized for students and young adults.
-
-✅ Professional Animations & Transitions
-Smooth fruit evolution, milestone effects, leaderboard updates, and UI motion.
   
-
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
