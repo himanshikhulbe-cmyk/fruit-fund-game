@@ -61,9 +61,9 @@ This project is built with:
 - Tailwind CSS
 
 ## ✨ Features Included
-✅ Gamified Savings Dashboard
-✅ Smart Goal Creation System (short/long term goals w/ deadlines, categories & priority tags.)
-✅ Fruit Evolution Mechanics
+•✅ Gamified Savings Dashboard
+•✅ Smart Goal Creation System (short/long term goals w/ deadlines, categories & priority tags.)
+•✅ Fruit Evolution Mechanics
 ✅ Milestone Token Rewards
 ✅ Fruit Market with Rare Variants (golden fruits)
 ✅ FriendFund (Shared Savings Goals)
