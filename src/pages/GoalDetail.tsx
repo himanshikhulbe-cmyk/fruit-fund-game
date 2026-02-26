@@ -14,7 +14,7 @@ import FruitBreakOverlay from "@/components/FruitBreakOverlay";
 import WhyIStartedModal from "@/components/WhyIStartedModal";
 import EditGoalModal from "@/components/EditGoalModal";
 import MysteryFruitToast from "@/components/MysteryFruitToast";
-import { getGoalFruitTiers } from "@/utils/fruitLogic";
+import { getGoalFruitTiers, getEvolutionStage, getFruitInfo } from "@/utils/fruitLogic";
 import { toast } from "@/hooks/use-toast";
 
 export default function GoalDetail() {
