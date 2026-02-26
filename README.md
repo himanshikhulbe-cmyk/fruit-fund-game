@@ -86,6 +86,7 @@ This project is built with:
 •✅ Profile Analytics Dashboard
 
 
+
 ## 🎯 FruitFund Demo Flow
 
 1️⃣ User creates a goal + selects fruit type
@@ -115,6 +116,7 @@ Tokens credited once (cannot be claimed again).
 Goal moves to Achievement Vault
 
 Leaderboard updates (if in Circle)
+
 
 
 🏆 Achievement unlocked
