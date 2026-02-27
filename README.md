@@ -17,16 +17,15 @@ Young adults face several critical financial behavior challenges: <br>
 **3. Impulse Leakage:** Savings get spent easily due to low psychological attachment.<br>
 **4. No Emotional Reinforcement:** Static numbers, no reward feedback loop.<br>
 **5. Lack of Micro-Milestones:** Big goals feel overwhelming without visible stages.<br>
-**6. Low Financial Engagement:** Saving feels like a chore, not an experience.<br>
-**7. Weak Habit Formation:** No gamification or accountability → broken streaks. <br>
+**6. Weak Habit Formation:** No gamification or accountability → broken streaks. <br>
 
 **Current solutions fail because:**
 
-- 📱 **Traditional banking apps →** Focus on transactions, not behavioral motivation
-- 📊 **Generic budgeting tools →** Complex dashboards overwhelm beginners
-- 💳 **Savings accounts →** Offer interest, but no engagement or reward loop
-- 🎯 **Goal trackers →** Show static progress bars with no emotional reinforcement
-- 🏦 **Fixed deposits/RDs →** Require commitment but lack flexibility and gamified feedback
+- 📱 **Traditional banking apps (ex HDFC Bank, SBI) →** Focus on transactions, not behavioral motivation
+- 📊 **Generic budgeting tools (ex Mint, YNAB)→** Complex dashboards overwhelm beginners
+- 💳 **Savings accounts (ex Acorns, Qapital)→** Automate saving/investing but no engagement or reward loop
+- 🎯 **Goal trackers (ex Walnut)→** Show static progress bars with no emotional reinforcement
+- 🏦 **Fixed deposits/RDs (ex, ICICI Bank FD/RD products)→** Require commitment but lack flexibility and gamified feedback
 ---
 
 # 💡 Our Solution: FruitFund ("Grow Your Money. Literally.")
@@ -233,3 +232,11 @@ Leaderboard updates (if in Circle)
 ☐ React Native mobile app <br>
 ☐ AI-powered financial adviser <br>
 ☐ Fruit Evolution Tree () <br>
+
+---
+## 👩‍💻 Team
+
+• **Himanshi Khulbe** – UI/UX & Frontend
+• **Shashwati Gawali** – Design & Ppt
+
+College: MKSSS’ Cummins College of Engineering for Women, Pune
