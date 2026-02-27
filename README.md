@@ -12,13 +12,13 @@
 Most young adults save money without attaching it to specific goals. Savings sit in a general account with no emotional or visual connection, making them easy to dip into for impulsive spending.
 
 Young adults face several critical financial behavior challenges: <br>
-**1. Abstract Saving:** Money is saved without attaching it to specific goals, making progress invisible & unmotivating. <br>
-**2. Inconsistent Discipline:** Irregular deposits and lack of tracking reduce long-term financial commitment.<br>
-**3. Impulse Leakage:** General savings accounts are frequently used for non-essential spending due to low psychological attachment.<br>
-**4. No Emotional Reinforcement:** Traditional banking apps use static numbers and charts, offering no reward feedback loop.<br>
-**5. Lack of Micro-Milestones:** Large financial goals feel overwhelming without visual progress stages.<br>
-**6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.<br>
-**7. Weak Habit Formation:** Without gamification or accountability, users fail to build consistent saving streaks. <br>
+**1. Abstract Saving:** Money sits unattached to goals; progress feels invisible. <br>
+**2. Inconsistent Discipline:** Irregular deposits weaken long-term commitment.<br>
+**3. Impulse Leakage:** Savings get spent easily due to low psychological attachment.<br>
+**4. No Emotional Reinforcement:** Static numbers, no reward feedback loop.<br>
+**5. Lack of Micro-Milestones:** Big goals feel overwhelming without visible stages.<br>
+**6. Low Financial Engagement:** Saving feels like a chore, not an experience.<br>
+**7. Weak Habit Formation:** No gamification or accountability → broken streaks. <br>
 
 **Current solutions fail because:**
 
@@ -169,7 +169,7 @@ npm run dev
 ```
 App runs locally with hot reload.
 <br><br>
-**✏️ Option 3: Edit Directly in GitHub**
+**🐈‍⬛ Option 3: Edit Directly in GitHub**
 
 Open the file<br>
 Click the ✏️ Edit button<br>
@@ -227,9 +227,9 @@ Leaderboard updates (if in Circle)
 ---
 ## 🚧 Roadmap (Post-Hackathon)
 
-☐ UPI auto-deposit integration
-☐ College leaderboard (friendly savings competition)
-☐ Referral rewards + promo code engine (Integration w/ Honey)
-☐ React Native mobile app
-☐ AI-powered financial adviser
-☐ Partner merchant discounts (student ecosystem)
+☐ UPI auto-deposit integration <br>
+☐ College leaderboard (friendly savings competition) <br>
+☐ Referral rewards + promo code engine (Integration w/ Honey) <br>
+☐ React Native mobile app <br>
+☐ AI-powered financial adviser <br>
+☐ Fruit Evolution Tree () <br>
