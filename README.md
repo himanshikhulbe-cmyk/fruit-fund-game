@@ -129,6 +129,57 @@ fruit-fund-game/
 └── README.md
 ```
 ---
+### 💻 How to Edit the Code
+🌐 Option 1: Use Lovable
+
+Visit the Lovable project:
+
+https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+
+Prompt changes directly.
+All updates are automatically committed to this repository.
+
+### 🖥️ Option 2: Use Your Preferred IDE
+Requirements
+
+Node.js
+
+npm
+(Install via nvm if needed: https://github.com/nvm-sh/nvm#installing-and-updating
+)
+
+Setup
+# 1️⃣ Clone the repository
+git clone https://github.com/himanshikhulbe-cmyk/fruit-fund-game.git
+
+# 2️⃣ Enter project folder
+cd fruit-fund-game
+
+# 3️⃣ Install dependencies
+npm install
+
+# 4️⃣ Run development server
+npm run dev
+App runs locally with hot reload.
+
+### ✏️ Option 3: Edit Directly in GitHub
+
+Open the file
+
+Click the ✏️ Edit button
+
+Commit changes
+
+### ☁️ Option 4: Use GitHub Codespaces
+
+Open repo
+
+Click Code → Codespaces
+
+Launch cloud dev environment
+
+Start editing instantly
+---
 
 ## How can I edit this code?
 
