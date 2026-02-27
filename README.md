@@ -146,7 +146,7 @@ Prompt changes directly.
 All updates are automatically committed to this repository.
 <br><br>
 **🖥️ Option 2: Use Your Preferred IDE**
-Requirements
+Requirements <br>
 - Node.js
 - npm
 (Install via nvm if needed: https://github.com/nvm-sh/nvm#installing-and-updating
@@ -239,4 +239,6 @@ Leaderboard updates (if in Circle)
 • **Himanshi Khulbe** – UI/UX & Frontend
 • **Shashwati Gawali** – Design & Ppt
 
-College: MKSSS’ Cummins College of Engineering for Women, Pune
+**College**: MKSSS’ Cummins College of Engineering for Women, Pune
+---
+**"We don’t just track money. We grow it — and you."**
