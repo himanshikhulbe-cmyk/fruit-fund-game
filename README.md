@@ -6,12 +6,12 @@
 ## 💎 Domain: Personal Finance
 ## 🌟 Problem Statement
 
-### **Title:** Abstract Saving Leads to Weak Financial Discipline
+### **Abstract Saving Leads to Weak Financial Discipline**
 
 **Problem Description:**
 Most young adults save money without attaching it to specific goals. Savings sit in a general account with no emotional or visual connection, making them easy to dip into for impulsive spending.
 
-Young adults face several critical financial behavior challenges: <br>
+Challenges faced by young adults: <br>
 **1. Abstract Saving:** Money sits unattached to goals; progress feels invisible. <br>
 **2. Inconsistent Discipline:** Irregular deposits weaken long-term commitment.<br>
 **3. Impulse Leakage:** Savings get spent easily due to low psychological attachment.<br>
@@ -25,7 +25,7 @@ Young adults face several critical financial behavior challenges: <br>
 - 📊 **Generic budgeting tools (ex Mint, YNAB)→** Complex dashboards overwhelm beginners
 - 💳 **Savings accounts (ex Acorns, Qapital)→** Automate saving/investing but no engagement or reward loop
 - 🎯 **Goal trackers (ex Walnut)→** Show static progress bars with no emotional reinforcement
-- 🏦 **Fixed deposits/RDs (ex, ICICI Bank FD/RD products)→** Require commitment but lack flexibility and gamified feedback
+- 🏦 **Fixed deposits/RDs (ex ICICI Bank FD/RD products)→** Require commitment but lack flexibility and gamified feedback
 ---
 
 # 💡 Our Solution: FruitFund ("Grow Your Money. Literally.")
@@ -227,18 +227,18 @@ Leaderboard updates (if in Circle) <br>
 ## 🚧 Roadmap (Post-Hackathon)
 
 ☐ UPI auto-deposit integration <br>
-☐ College leaderboard (friendly savings competition) <br>
 ☐ Referral rewards + promo code engine (Integration w/ Honey) <br>
 ☐ React Native mobile app <br>
-☐ AI-powered financial adviser <br>
-☐ Fruit Evolution Tree () <br>
+☐ AI-powered financial adviser chatbot <br>
+☐ Automatic AI financial tracking and feedback <br>
+☐ Mini Games section <br>
 
 ---
 ## 👩‍💻 Team
 
-• **Himanshi Khulbe** – UI/UX & Frontend
+• **Himanshi Khulbe** – UI/UX & Frontend <br>
 • **Shashwati Gawali** – Design & Ppt
 
 **College**: MKSSS’ Cummins College of Engineering for Women, Pune
 ---
-<p align="center"> ### **"We don’t just track money. We grow it — and you."** </p>
+<p align="center">  **"###We don’t just track money. We grow it — and you."** </p>
