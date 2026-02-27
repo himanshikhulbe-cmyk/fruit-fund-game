@@ -1,4 +1,4 @@
-# 🍎 FruitFund – Gamified Savings for Students
+<img width="912" height="317" alt="image" src="https://github.com/user-attachments/assets/8017a038-4e6f-4ce0-857e-98e760e1775f" /># 🍎 FruitFund – Gamified Savings for Students
 > Turn your savings into a fruit-merging game.  
 > Build habits. Unlock goals. Watch your money grow.
 
@@ -138,7 +138,7 @@ https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 Prompt changes directly.
 All updates are automatically committed to this repository.
 
-
+<br><br>
 **🖥️ Option 2: Use Your Preferred IDE**
 Requirements
 - Node.js
