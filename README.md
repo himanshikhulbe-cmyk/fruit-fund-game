@@ -1,4 +1,6 @@
 # 🍎 FruitFund – Gamified Savings for Students
+> Turn your savings into a fruit-merging game.  
+> Build habits. Unlock goals. Watch your money grow.
 
 ## Project info
 
