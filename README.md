@@ -206,22 +206,22 @@ fruit-fund-game/
 ## 🎮 FruitFund Demo Flow
 
 **1️⃣ User creates a goal + selects fruit type**
-Enters:Goal name, Target amount, Deadline, Short-term / Long-term
-Optional: Choose Flexible / FD / RD mode
+Enters:Goal name, Target amount, Deadline, Short-term / Long-term <br>
+Optional: Choose Flexible / FD / RD mode <br>
 
 **2️⃣ Makes first deposit**
-✨ Fruit appears and starts evolving.
-Progress bar updates in real time.
-Streak counter activates.
+✨ Fruit appears and starts evolving. <br>
+Progress bar updates in real time. <br>
+Streak counter activates. <br>
 
 **3️⃣ Reaches 50% milestone**
-🎉 Milestone animation plays (fruit glow + token reward).
-Tokens credited once (cannot be claimed again).
+🎉 Milestone animation plays (fruit glow + token reward). <br>
+Tokens credited once (cannot be claimed again). <br>
  
 **4️⃣Completes Goal**
-🏆 Achievement unlocked
-Goal moves to Achievement Vault
-Leaderboard updates (if in Circle)
+🏆 Achievement unlocked <br>
+Goal moves to Achievement Vault <br>
+Leaderboard updates (if in Circle) <br>
 
 ---
 ## 🚧 Roadmap (Post-Hackathon)
@@ -241,4 +241,4 @@ Leaderboard updates (if in Circle)
 
 **College**: MKSSS’ Cummins College of Engineering for Women, Pune
 ---
-**"We don’t just track money. We grow it — and you."**
+<p align="center"> ### **"We don’t just track money. We grow it — and you."** </p>
