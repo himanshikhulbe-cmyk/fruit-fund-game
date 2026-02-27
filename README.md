@@ -138,6 +138,7 @@ https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 Prompt changes directly.
 All updates are automatically committed to this repository.
 
+
 **🖥️ Option 2: Use Your Preferred IDE**
 Requirements
 - Node.js
@@ -161,11 +162,13 @@ npm run dev
 ```
 App runs locally with hot reload.
 
+
 **✏️ Option 3: Edit Directly in GitHub**
 
 Open the file<br>
 Click the ✏️ Edit button<br>
 Commit changes
+
 
 **☁️ Option 4: Use GitHub Codespaces**
 
