@@ -156,16 +156,16 @@ Requirements
 
 **Setup**
 ```sh
-#### 1️⃣ Clone the repository
+1️⃣ Clone the repository
 git clone https://github.com/himanshikhulbe-cmyk/fruit-fund-game.git
 
-#### 2️⃣ Enter project folder
+2️⃣ Enter project folder
 cd fruit-fund-game
 
-#### 3️⃣ Install dependencies
+3️⃣ Install dependencies
 npm install
 
-#### 4️⃣ Run development server
+4️⃣ Run development server
 npm run dev
 ```
 App runs locally with hot reload.
