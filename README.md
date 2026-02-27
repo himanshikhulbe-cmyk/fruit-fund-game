@@ -2,6 +2,32 @@
 > Turn your savings into a fruit-merging game.  
 > Build habits. Unlock goals. Watch your money grow.
 
+##💎 Domain: Personal Finance
+##🌟 Problem Statement
+
+### **Title:** Abstract Saving Leads to Weak Financial Discipline
+
+**Problem Description:**
+Most young adults save money without attaching it to specific goals. Savings sit in a general account with no emotional or visual connection, making them easy to dip into for impulsive spending.
+
+Young adults face several critical financial behavior challenges: <br>
+**1. Abstract Saving:** Money is saved without attaching it to specific goals, making progress invisible & unmotivating.
+**2. Inconsistent Discipline:** Irregular deposits and lack of tracking reduce long-term financial commitment.
+**3. Impulse Leakage:** General savings accounts are frequently used for non-essential spending due to low psychological attachment.
+**4. No Emotional Reinforcement:** Traditional banking apps use static numbers and charts, offering no reward feedback loop.
+**5. Lack of Micro-Milestones:** Large financial goals feel overwhelming without visual progress stages.
+**6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.
+
+Weak Habit Formation: Without gamification or accountability, users fail to build consistent saving streaks. <br>
+**Current solutions fail because:**
+
+- 📱 **Traditional banking apps →** Focus on transactions, not behavioral motivation
+- 📊 **Generic budgeting tools →** Complex dashboards overwhelm beginners
+- 💳 **Savings accounts →** Offer interest, but no engagement or reward loop
+- 🎯 **Goal trackers →** Show static progress bars with no emotional reinforcement
+- 🏦 **Fixed deposits/RDs →** Require commitment but lack flexibility and gamified feedback
+---
+
 ## 🚀 Live Project
 
 **🔗 Lovable App:** https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
