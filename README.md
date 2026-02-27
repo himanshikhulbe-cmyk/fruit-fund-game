@@ -112,7 +112,9 @@ Works perfectly on:
 └──────────────────────────────────────────────┘
 ```
 ---
-🧩 Project Structure
+## 🧩 Project Structure
+
+```
 fruit-fund-game/
 │
 ├── src/
@@ -125,6 +127,7 @@ fruit-fund-game/
 ├── public/
 ├── package.json
 └── README.md
+```
 ---
 
 ## How can I edit this code?
