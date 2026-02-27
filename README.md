@@ -1,6 +1,7 @@
 # 🍎 FruitFund – Gamified Savings for Students
 > Turn your savings into a fruit-merging game.  
 > Build habits. Unlock goals. Watch your money grow.
+---
 
 ## 💎 Domain: Personal Finance
 ## 🌟 Problem Statement
@@ -16,9 +17,9 @@ Young adults face several critical financial behavior challenges: <br>
 **3. Impulse Leakage:** General savings accounts are frequently used for non-essential spending due to low psychological attachment.<br>
 **4. No Emotional Reinforcement:** Traditional banking apps use static numbers and charts, offering no reward feedback loop.<br>
 **5. Lack of Micro-Milestones:** Large financial goals feel overwhelming without visual progress stages.<br>
-**6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.
+**6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.<br>
 
-Weak Habit Formation: Without gamification or accountability, users fail to build consistent saving streaks. <br>
+**7. Weak Habit Formation:** Without gamification or accountability, users fail to build consistent saving streaks. <br>
 **Current solutions fail because:**
 
 - 📱 **Traditional banking apps →** Focus on transactions, not behavioral motivation
