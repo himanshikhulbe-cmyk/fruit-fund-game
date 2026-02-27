@@ -8,7 +8,7 @@
 
 ## 📌 Overview
 
-### ** FruitFund** 
+### **FruitFund** 
 is a gamified savings habit app designed for college students and young adults.
 
 Instead of boring progress bars, your savings evolve as fruits.
@@ -22,6 +22,46 @@ It combines:
 - 📊 Mathematical accuracy in savings tracking
 
 ---
+## 🎯 Core Features
+### 🍓 Goal-Based Saving
+
+- Create savings goals (Travel, Education, Healthcare, etc.)
+- Define exact target amount
+- Track real-time progress with visual fruit growth
+
+### 🍍 Fruit Evolution System
+
+- Small deposits → Seed stage
+- Consistent savings → Fruit grows
+- Goal completion → Golden Fruit 🍏✨
+- Withdrawal → Fruit cracking animation 💥
+
+### 🏆 Achievement Vault
+
+Each completed goal shows:
+
+- Goal name
+- Target amount
+- Completion date
+- Total time taken
+- Consistency score (%)
+- Fruit evolution summary
+- Badge earned
+
+### 📱 Fully Responsive
+
+Works perfectly on:
+
+- Desktop (1920px+)
+- Tablet (768px+)
+- Mobile (375px+)
+
+### ⚡ Performance Optimized
+
+- <2s load time
+- 60fps smooth animations
+- Optimized bundle size
+- No external API calls
 
 ## How can I edit this code?
 
