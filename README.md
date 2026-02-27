@@ -63,32 +63,55 @@ Works perfectly on:
 - Optimized bundle size
 - No external API calls
 
-🧮 Financial Integrity (Core Rule)
+### 🧮 Financial Integrity (Core Rule)
 
-All financial calculations follow:
+- All financial calculations follow:
+- Exact match with user-entered target
+- No rounding drift
+- Dashboard stats = real saved amount
+- Progress % is mathematically consistent
+- Withdrawal logic updates instantly
 
-Exact match with user-entered target
+### 🛠️ Tech Stack
 
-No rounding drift
+- Frontend: React + TypeScript
+- Build Tool: Vite
+- Styling: TailwindCSS
+- State Management: React hooks
+- Deployment: Lovable
 
-Dashboard stats = real saved amount
-
-Progress % is mathematically consistent
-
-Withdrawal logic updates instantly
-
-🛠️ Tech Stack
-
-Frontend: React + TypeScript
-
-Build Tool: Vite
-
-Styling: TailwindCSS
-
-State Management: React hooks
-
-Deployment: Lovable
-
+---
+## 🏗️ Architecture
+┌──────────────────────────────┐
+│        React Frontend        │
+│     (TypeScript + Vite)      │
+│        + TailwindCSS         │
+│  UI • Animations • Game Logic│
+└───────────────┬──────────────┘
+                │
+                ↓
+┌──────────────────────────────┐
+│      State Management        │
+│   (React Hooks / Context)    │
+│  Savings Logic • Calculations│
+│  Goal Tracking • Animations  │
+└───────────────┬──────────────┘
+                │
+                ↓
+┌──────────────────────────────┐
+│     Local Storage Layer      │
+│  Persistent Goal Data        │
+│  Deposit History             │
+│  Achievement Vault           │
+└───────────────┬──────────────┘
+                │
+                ↓
+┌──────────────────────────────┐
+│   Gamification Engine        │
+│  Fruit Evolution Logic       │
+│  Merge Mechanics             │
+│  Withdrawal Animation        │
+└──────────────────────────────┘
 ---
 ## How can I edit this code?
 
