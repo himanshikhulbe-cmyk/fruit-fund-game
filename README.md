@@ -15,10 +15,10 @@ Deposit money → fruits grow → goals level up → achievements unlock.
 
 It combines:
 
--🎮 Game mechanics (fruit merging evolution)
--💰 Financial discipline (goal-based saving)
--🏆 Achievement tracking
--📊 Mathematical accuracy in savings tracking
+- 🎮 Game mechanics (fruit merging evolution)
+- 💰 Financial discipline (goal-based saving)
+- 🏆 Achievement tracking
+- 📊 Mathematical accuracy in savings tracking
 
 ## How can I edit this code?
 
