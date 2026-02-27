@@ -74,44 +74,43 @@ Works perfectly on:
 
 ### 🛠️ Tech Stack
 
-- Frontend: React + TypeScript
-- Build Tool: Vite
-- Styling: TailwindCSS
-- State Management: React hooks
-- Deployment: Lovable
+- **Frontend:** React + TypeScript
+- **Build Tool:** Vite
+- **Styling: TailwindCSS
+- **State Management: React hooks
+- **Deployment: Lovable
 
 ---
 ## 🏗️ Architecture
-┌──────────────────────────────┐
-│        React Frontend        │
-│     (TypeScript + Vite)      │
-│        + TailwindCSS         │
-│  UI • Animations • Game Logic│
-└───────────────┬──────────────┘
-                │
-                ↓
-┌──────────────────────────────┐
-│      State Management        │
-│   (React Hooks / Context)    │
-│  Savings Logic • Calculations│
-│  Goal Tracking • Animations  │
-└───────────────┬──────────────┘
-                │
-                ↓
-┌──────────────────────────────┐
-│     Local Storage Layer      │
-│  Persistent Goal Data        │
-│  Deposit History             │
-│  Achievement Vault           │
-└───────────────┬──────────────┘
-                │
-                ↓
-┌──────────────────────────────┐
-│   Gamification Engine        │
-│  Fruit Evolution Logic       │
-│  Merge Mechanics             │
-│  Withdrawal Animation        │
-└──────────────────────────────┘
+
+```
+┌──────────────────────────────────────────────┐
+│              React Frontend                 │
+│ (TypeScript + Vite) + TailwindCSS           │
+│ UI • Animations • Game Logic                │
+└───────────────────────┬──────────────────────┘
+                        │
+                        ↓
+┌──────────────────────────────────────────────┐
+│              State Management               │
+│ (React Hooks / Context)                     │
+│ Savings Logic • Calculations • Goal Tracking│
+└───────────────────────┬──────────────────────┘
+                        │
+                        ↓
+┌──────────────────────────────────────────────┐
+│              Local Storage Layer            │
+│ Persistent Goal Data • Deposit History      │
+│ Achievement Vault                           │
+└───────────────────────┬──────────────────────┘
+                        │
+                        ↓
+┌──────────────────────────────────────────────┐
+│              Gamification Engine            │
+│ Fruit Evolution • Merge Mechanics           │
+│ Withdrawal Animation                        │
+└──────────────────────────────────────────────┘
+```
 ---
 ## How can I edit this code?
 
