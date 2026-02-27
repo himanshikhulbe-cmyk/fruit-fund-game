@@ -8,7 +8,8 @@
 
 ## 📌 Overview
 
-**### FruitFund** is a gamified savings habit app designed for college students and young adults.
+### ** FruitFund** 
+is a gamified savings habit app designed for college students and young adults.
 
 Instead of boring progress bars, your savings evolve as fruits.
 Deposit money → fruits grow → goals level up → achievements unlock.
