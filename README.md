@@ -243,6 +243,7 @@ Leaderboard micro-interactions
 Professional loading states
 Clear call-to-action buttons (Deposit, Analyze, Join Circle, Upgrade Fruit)
 
+---
 ## 🏆 Why This Demo Works
 
 - ✅ Shows you can build a functional fintech prototype
