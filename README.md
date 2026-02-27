@@ -133,10 +133,10 @@ Works perfectly on:
 
 - **Frontend:** React + TypeScript
 - **Build Tool:** Vite
-- **Styling: TailwindCSS
-- **State Management: React hooks
-- **Deployment: Lovable
-- 
+- **Styling:** TailwindCSS
+- **State Management:** React hooks
+- **Deployment:** Lovable
+  
 ---
 ### 💻 How to Edit the Code
 **🌐 Option 1: Use Lovable**
