@@ -2,9 +2,26 @@
 > Turn your savings into a fruit-merging game.  
 > Build habits. Unlock goals. Watch your money grow.
 
-## Project info
+## 🚀 Live Project
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**🔗 Lovable App:** https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+
+## 📌 Overview
+
+**FruitFund** is a gamified savings habit app designed for college students and young adults.
+
+Instead of boring progress bars, your savings evolve as fruits.
+Deposit money → fruits grow → goals level up → achievements unlock.
+
+It combines:
+
+🎮 Game mechanics (fruit merging evolution)
+
+💰 Financial discipline (goal-based saving)
+
+🏆 Achievement tracking
+
+📊 Mathematical accuracy in savings tracking
 
 ## How can I edit this code?
 
