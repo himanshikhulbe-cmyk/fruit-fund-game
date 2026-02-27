@@ -63,6 +63,33 @@ Works perfectly on:
 - Optimized bundle size
 - No external API calls
 
+🧮 Financial Integrity (Core Rule)
+
+All financial calculations follow:
+
+Exact match with user-entered target
+
+No rounding drift
+
+Dashboard stats = real saved amount
+
+Progress % is mathematically consistent
+
+Withdrawal logic updates instantly
+
+🛠️ Tech Stack
+
+Frontend: React + TypeScript
+
+Build Tool: Vite
+
+Styling: TailwindCSS
+
+State Management: React hooks
+
+Deployment: Lovable
+
+---
 ## How can I edit this code?
 
 There are several ways of editing your application.
