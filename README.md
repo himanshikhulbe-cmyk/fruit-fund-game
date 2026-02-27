@@ -18,7 +18,6 @@ Young adults face several critical financial behavior challenges: <br>
 **4. No Emotional Reinforcement:** Traditional banking apps use static numbers and charts, offering no reward feedback loop.<br>
 **5. Lack of Micro-Milestones:** Large financial goals feel overwhelming without visual progress stages.<br>
 **6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.<br>
-
 **7. Weak Habit Formation:** Without gamification or accountability, users fail to build consistent saving streaks. <br>
 
 **Current solutions fail because:**
@@ -51,32 +50,32 @@ It combines:
 ## 🏗️ Architecture
 
 ```
-┌──────────────────────────────────────────────┐
+┌─────────────────────────────────────────────┐
 │              React Frontend                 │
 │ (TypeScript + Vite) + TailwindCSS           │
 │ UI • Animations • Game Logic                │
-└───────────────────────┬──────────────────────┘
+└───────────────────────┬─────────────────────┘
                         │
                         ↓
-┌──────────────────────────────────────────────┐
+┌─────────────────────────────────────────────┐
 │              State Management               │
 │ (React Hooks / Context)                     │
 │ Savings Logic • Calculations • Goal Tracking│
-└───────────────────────┬──────────────────────┘
+└───────────────────────┬─────────────────────┘
                         │
                         ↓
-┌──────────────────────────────────────────────┐
+┌─────────────────────────────────────────────┐
 │              Local Storage Layer            │
 │ Persistent Goal Data • Deposit History      │
 │ Achievement Vault                           │
-└───────────────────────┬──────────────────────┘
+└───────────────────────┬─────────────────────┘
                         │
                         ↓
-┌──────────────────────────────────────────────┐
+┌─────────────────────────────────────────────┐
 │              Gamification Engine            │
 │ Fruit Evolution • Merge Mechanics           │
 │ Withdrawal Animation                        │
-└──────────────────────────────────────────────┘
+└─────────────────────────────────────────────┘
 ```
 ---
 ## 🎯 Core Features
@@ -205,7 +204,7 @@ fruit-fund-game/
 ```
 
 ---
-## 🎯 FruitFund Demo Flow
+## 🎮 FruitFund Demo Flow
 
 **1️⃣ User creates a goal + selects fruit type**
 Enters:Goal name, Target amount, Deadline, Short-term / Long-term
@@ -226,32 +225,11 @@ Goal moves to Achievement Vault
 Leaderboard updates (if in Circle)
 
 ---
+## 🚧 Roadmap (Post-Hackathon)
 
-## 🎨 Design Features
-
-Fruit-inspired vibrant gradient branding (Orange / Peach / Green tones)
-Milestone-based color coding:
-
-🟢 Green → Goal On Track
-
-🟡 Yellow → Needs Attention
-
-🔴 Red → High Vulnerability
-
-Smooth fruit evolution animations
-Leaderboard micro-interactions
-Professional loading states
-Clear call-to-action buttons (Deposit, Analyze, Join Circle, Upgrade Fruit)
-
----
-## 🏆 Why This Demo Works
-
-- ✅ Shows you can build a functional fintech prototype
-- ✅ Proves gamified savings is technically feasible
-- ✅ Demonstrates strong UX & behavioral design thinking
-- ✅ Blends finance + psychology + gamification
-- ✅ Judges can click through and experience the product
-- ✅ Memorable visual system (evolving fruits + report score)
-- ✅ Competitive social element (Circles + Leaderboard)
-  
-
+☐ UPI auto-deposit integration
+☐ College leaderboard (friendly savings competition)
+☐ Referral rewards + promo code engine (Integration w/ Honey)
+☐ React Native mobile app
+☐ AI-powered financial adviser
+☐ Partner merchant discounts (student ecosystem)
