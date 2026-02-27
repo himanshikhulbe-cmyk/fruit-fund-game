@@ -1,4 +1,4 @@
-# FRUITFUND
+# 🍎 FruitFund – Gamified Savings for Students
 
 ## Project info
 
