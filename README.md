@@ -112,6 +112,21 @@ Works perfectly on:
 └──────────────────────────────────────────────┘
 ```
 ---
+🧩 Project Structure
+fruit-fund-game/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── utils/
+│   └── App.tsx
+│
+├── public/
+├── package.json
+└── README.md
+---
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
