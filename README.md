@@ -241,4 +241,4 @@ Leaderboard updates (if in Circle) <br>
 
 **College**: MKSSS’ Cummins College of Engineering for Women, Pune
 ---
-<p align="center">  **"### We don’t just track money. We grow it — and you."** </p>
+<p align="center">  **"We don’t just track money. We grow it — and you."** </p>
