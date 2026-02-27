@@ -20,6 +20,7 @@ Young adults face several critical financial behavior challenges: <br>
 **6. Low Financial Engagement:** Saving feels like a chore rather than an interactive, rewarding activity.<br>
 
 **7. Weak Habit Formation:** Without gamification or accountability, users fail to build consistent saving streaks. <br>
+
 **Current solutions fail because:**
 
 - 📱 **Traditional banking apps →** Focus on transactions, not behavioral motivation
@@ -29,17 +30,11 @@ Young adults face several critical financial behavior challenges: <br>
 - 🏦 **Fixed deposits/RDs →** Require commitment but lack flexibility and gamified feedback
 ---
 
-## 🚀 Live Project
+# 💡 Our Solution: FruitFund ("Grow Your Money. Literally.")
+**Gamified savings habit app** designed for college students and young adults. <br>
 
-**🔗 Lovable App:** https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
-
-## 📌 Overview
-
-### **FruitFund** 
-is a gamified savings habit app designed for college students and young adults.
-
-Instead of boring progress bars, your savings evolve as fruits.
-Deposit money → fruits grow → goals level up → achievements unlock.
+Instead of boring progress bars, your savings evolve as fruits. <br>
+Deposit money → fruits grow → goals level up → achievements unlock. <br>
 
 It combines:
 
@@ -47,6 +42,10 @@ It combines:
 - 💰 Financial discipline (goal-based saving)
 - 🏆 Achievement tracking
 - 📊 Mathematical accuracy in savings tracking
+
+## 🚀 Live Project
+
+**🔗 Lovable App:** https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
 ---
 ## 🎯 Core Features
