@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import HowItWorksSection from "@/components/HowItWorksSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { useRedeemedCodes, useRedeemCode, useUserTokens, useMarketInventory, useWishlists, useAddWishlistItem, useDeleteWishlistItem, useDraftGoals, useDeleteDraft, useIsPremium } from "@/hooks/useProfile";
@@ -90,6 +91,7 @@ export default function ProfilePage() {
   const sections = [
     { id: "stats", label: "📊 Statistics", icon: "📊" },
     { id: "vault", label: "🏆 Achievement Vault", icon: "🏆" },
+    { id: "guide", label: "📖 How It Works", icon: "📖" },
     { id: "redeem", label: "🎟️ Redeem Code", icon: "🎟️" },
     { id: "premium", label: "👑 Premium", icon: "👑" },
     { id: "wishlist", label: "💝 Wishlist", icon: "💝" },
@@ -159,6 +161,9 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     )}
+
+                    {/* HOW IT WORKS */}
+                    {s.id === "guide" && <HowItWorksSection />}
 
                     {/* ACHIEVEMENT VAULT */}
                     {s.id === "vault" && (

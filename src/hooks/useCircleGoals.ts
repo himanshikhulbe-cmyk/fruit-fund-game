@@ -12,6 +12,7 @@ export interface CircleGoal {
   created_by: string;
   created_at: string;
   deadline: string | null;
+  image_path: string | null;
 }
 
 export interface CircleGoalContribution {
@@ -58,7 +59,7 @@ export function useCreateCircleGoal() {
   const qc = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async ({ circleId, name, targetAmount, icon, deadline }: { circleId: string; name: string; targetAmount: number; icon: string; deadline?: string }) => {
+    mutationFn: async ({ circleId, name, targetAmount, icon, deadline, imagePath }: { circleId: string; name: string; targetAmount: number; icon: string; deadline?: string; imagePath?: string }) => {
       const { data, error } = await supabase
         .from("circle_goals")
         .insert({
@@ -68,6 +69,7 @@ export function useCreateCircleGoal() {
           icon,
           created_by: user!.id,
           ...(deadline ? { deadline } : {}),
+          ...(imagePath ? { image_path: imagePath } : {}),
         } as any)
         .select()
         .single();
@@ -76,6 +78,7 @@ export function useCreateCircleGoal() {
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["circle-goals", vars.circleId] });
+      qc.invalidateQueries({ queryKey: ["all-circle-goals"] });
     },
   });
 }
@@ -112,6 +115,7 @@ export function useContributeToCircleGoal() {
       qc.invalidateQueries({ queryKey: ["circle-goals", vars.circleId] });
       qc.invalidateQueries({ queryKey: ["circle-goal-contributions"] });
       qc.invalidateQueries({ queryKey: ["circle-deposits"] });
+      qc.invalidateQueries({ queryKey: ["all-circle-goals"] });
     },
   });
 }

@@ -78,6 +78,44 @@ export type Database = {
           },
         ]
       }
+      circle_goal_fruits: {
+        Row: {
+          circle_goal_id: string
+          created_at: string
+          id: string
+          is_special: boolean
+          special_type: string | null
+          tier: number
+          value: number
+        }
+        Insert: {
+          circle_goal_id: string
+          created_at?: string
+          id?: string
+          is_special?: boolean
+          special_type?: string | null
+          tier?: number
+          value?: number
+        }
+        Update: {
+          circle_goal_id?: string
+          created_at?: string
+          id?: string
+          is_special?: boolean
+          special_type?: string | null
+          tier?: number
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_goal_fruits_circle_goal_id_fkey"
+            columns: ["circle_goal_id"]
+            isOneToOne: false
+            referencedRelation: "circle_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circle_goals: {
         Row: {
           circle_id: string
@@ -87,6 +125,7 @@ export type Database = {
           deadline: string | null
           icon: string
           id: string
+          image_path: string | null
           name: string
           target_amount: number
         }
@@ -98,6 +137,7 @@ export type Database = {
           deadline?: string | null
           icon?: string
           id?: string
+          image_path?: string | null
           name: string
           target_amount?: number
         }
@@ -109,6 +149,7 @@ export type Database = {
           deadline?: string | null
           icon?: string
           id?: string
+          image_path?: string | null
           name?: string
           target_amount?: number
         }
