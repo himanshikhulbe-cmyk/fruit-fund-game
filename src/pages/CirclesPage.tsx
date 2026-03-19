@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMyCircles, useCircleMembers, useCircleDeposits, useCreateCircle, useJoinCircle, useLogCircleDeposit, Circle } from "@/hooks/useCircles";
 import { useCircleGoals, useCreateCircleGoal, useContributeToCircleGoal, useCircleGoalContributions, CircleGoal } from "@/hooks/useCircleGoals";
+import { useCircleGoalFruits, useCircleGoalDeposit, useCircleGoalManualMerge } from "@/hooks/useCircleGoalFruits";
+import { getEvolutionStage } from "@/utils/fruitLogic";
+import FruitGrid from "@/components/FruitGrid";
 import BottomNav from "@/components/BottomNav";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 function CircleGoalDetail({ goal, members, circleId }: { goal: CircleGoal; members: any[]; circleId: string }) {
   const { data: contributions } = useCircleGoalContributions(goal.id);
   const contribute = useContributeToCircleGoal();
+  const { data: fruits, isLoading: fruitsLoading } = useCircleGoalFruits(goal.id);
+  const circleDeposit = useCircleGoalDeposit();
+  const manualMerge = useCircleGoalManualMerge();
   const { user } = useAuth();
   const [amount, setAmount] = useState("");
 
   const pct = goal.target_amount > 0 ? Math.min(100, (goal.current_amount / goal.target_amount) * 100) : 0;
   const remaining = Math.max(0, goal.target_amount - goal.current_amount);
+  const evolution = getEvolutionStage(goal.current_amount, goal.target_amount);
 
   // Contribution breakdown per member
   const byMember: Record<string, number> = {};
@@ -30,16 +38,45 @@ function CircleGoalDetail({ goal, members, circleId }: { goal: CircleGoal; membe
     const amt = parseInt(amount);
     if (!amt || amt <= 0) return;
     await contribute.mutateAsync({ circleGoalId: goal.id, amount: amt, circleId });
+    // Generate fruits based on new total
+    await circleDeposit.mutateAsync({ circleGoalId: goal.id, amount: amt, existingFruits: fruits ?? [] });
     setAmount("");
     toast({ title: "✅ Contributed ₹" + amt });
   };
 
+  const handleMerge = async (fruitAId: string, fruitBId: string) => {
+    if (!fruits) return;
+    await manualMerge.mutateAsync({
+      circleGoalId: goal.id,
+      fruitAId,
+      fruitBId,
+      existingFruits: fruits,
+    });
+  };
+
+  // Get image URL
+  const imageUrl = (goal as any).image_path
+    ? supabase.storage.from("goal-images").getPublicUrl((goal as any).image_path).data.publicUrl
+    : null;
+
   return (
     <div className="card-playful p-4 space-y-3">
+      {/* Goal image */}
+      {imageUrl && (
+        <div className="rounded-lg overflow-hidden aspect-video bg-muted">
+          <img src={imageUrl} alt={goal.name} loading="lazy" className="w-full h-full object-cover" />
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         <span className="text-xl">{goal.icon}</span>
         <div className="flex-1">
-          <p className="text-sm font-bold text-foreground">{goal.name}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-bold text-foreground">{goal.name}</p>
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">
+              {evolution.label}
+            </span>
+          </div>
           <p className="text-[10px] text-muted-foreground">
             ₹{goal.current_amount.toLocaleString()} / ₹{goal.target_amount.toLocaleString()}
             {remaining > 0 && <span> • ₹{remaining.toLocaleString()} left</span>}
@@ -59,6 +96,14 @@ function CircleGoalDetail({ goal, members, circleId }: { goal: CircleGoal; membe
           {daysLeft > 0 ? `🗓️ ${daysLeft} days left` : "⚠️ Deadline passed"}
         </p>
       )}
+
+      {/* Fruit Grid - shared across all members */}
+      <FruitGrid
+        fruits={fruits ?? []}
+        loading={fruitsLoading}
+        onMerge={handleMerge}
+        merging={manualMerge.isPending}
+      />
 
       {/* Member breakdown */}
       <div className="space-y-1">
@@ -91,7 +136,7 @@ function CircleGoalDetail({ goal, members, circleId }: { goal: CircleGoal; membe
             min={1}
             className="flex-1 px-2 py-1.5 rounded-lg bg-muted border border-border text-foreground text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
           />
-          <button type="submit" disabled={contribute.isPending} className="px-3 py-1.5 rounded-lg btn-deposit text-primary-foreground font-bold text-[10px] disabled:opacity-50">
+          <button type="submit" disabled={contribute.isPending || circleDeposit.isPending} className="px-3 py-1.5 rounded-lg btn-deposit text-primary-foreground font-bold text-[10px] disabled:opacity-50">
             Contribute
           </button>
         </form>
@@ -126,7 +171,6 @@ function CircleLeaderboard({ deposits, members, circleGoals }: { deposits: any[]
     const memberDeposits = deposits?.filter((d) => d.user_id === m.user_id) ?? [];
     const totalAmount = memberDeposits.reduce((s, d) => s + d.amount, 0);
 
-    // Calculate streaks from deposit dates
     const dates = [...new Set(memberDeposits.map((d) => new Date(d.deposited_at).toDateString()))].sort(
       (a, b) => new Date(a).getTime() - new Date(b).getTime()
     );
@@ -147,7 +191,6 @@ function CircleLeaderboard({ deposits, members, circleGoals }: { deposits: any[]
     }
     longestStreak = Math.max(longestStreak, tempStreak);
 
-    // Current streak: check if last deposit was today or yesterday
     if (dates.length > 0) {
       const lastDate = new Date(dates[dates.length - 1]);
       const today = new Date();
@@ -249,24 +292,49 @@ function CircleDetail({ circle, onBack }: { circle: Circle; onBack: () => void }
   const [goalName, setGoalName] = useState("");
   const [goalTarget, setGoalTarget] = useState("1000");
   const [goalDeadline, setGoalDeadline] = useState("");
+  const [goalImage, setGoalImage] = useState<File | null>(null);
+  const [goalImagePreview, setGoalImagePreview] = useState<string | null>(null);
   const [depositAmount, setDepositAmount] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const totalCircleSavings = deposits?.reduce((s, d) => s + d.amount, 0) ?? 0;
   const isCreator = circle.created_by === user?.id;
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setGoalImage(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => setGoalImagePreview(ev.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCreateGoal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!goalName.trim()) return;
+
+    let imagePath: string | undefined;
+    if (goalImage) {
+      const ext = goalImage.name.split(".").pop();
+      const path = `circle-goals/${circle.id}/${crypto.randomUUID()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("goal-images").upload(path, goalImage);
+      if (!uploadError) imagePath = path;
+    }
+
     await createGoal.mutateAsync({
       circleId: circle.id,
       name: goalName.trim(),
       targetAmount: parseInt(goalTarget) || 1000,
       icon: "🎯",
       deadline: goalDeadline || undefined,
+      imagePath,
     });
     setGoalName("");
     setGoalTarget("1000");
     setGoalDeadline("");
+    setGoalImage(null);
+    setGoalImagePreview(null);
     setShowCreateGoal(false);
     toast({ title: "🎯 Shared goal created!" });
   };
@@ -380,6 +448,37 @@ function CircleDetail({ circle, onBack }: { circle: Circle; onBack: () => void }
                   onChange={(e) => setGoalDeadline(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
                 />
+
+                {/* Image upload */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full px-3 py-2 rounded-lg bg-muted border border-dashed border-border text-muted-foreground text-xs font-semibold hover:border-primary transition-colors"
+                  >
+                    {goalImage ? "📷 Change Image" : "📷 Add Image (optional)"}
+                  </button>
+                  {goalImagePreview && (
+                    <div className="mt-2 relative rounded-lg overflow-hidden aspect-video bg-muted">
+                      <img src={goalImagePreview} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => { setGoalImage(null); setGoalImagePreview(null); }}
+                        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-destructive text-destructive-foreground text-xs font-bold flex items-center justify-center"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <button type="submit" disabled={createGoal.isPending} className="w-full py-2 rounded-lg btn-deposit text-primary-foreground font-bold text-sm disabled:opacity-50">
                   {createGoal.isPending ? "Creating..." : "Create Shared Goal 🎯"}
                 </button>
@@ -461,7 +560,6 @@ export default function CirclesPage() {
       setCreateName("");
       setDisplayName("");
       toast({ title: "🎉 Circle created!" });
-      // Auto-navigate to the new circle
       setSelectedCircle(circle);
     } catch (err: any) {
       toast({ title: "❌ Error", description: err.message, variant: "destructive" });
