@@ -162,6 +162,9 @@ export default function ProfilePage() {
                       </div>
                     )}
 
+                    {/* HOW IT WORKS */}
+                    {s.id === "guide" && <HowItWorksSection />}
+
                     {/* ACHIEVEMENT VAULT */}
                     {s.id === "vault" && (
                       <div className="space-y-3">
