@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import HowItWorksSection from "@/components/HowItWorksSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { useRedeemedCodes, useRedeemCode, useUserTokens, useMarketInventory, useWishlists, useAddWishlistItem, useDeleteWishlistItem, useDraftGoals, useDeleteDraft, useIsPremium } from "@/hooks/useProfile";
