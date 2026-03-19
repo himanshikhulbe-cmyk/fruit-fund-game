@@ -91,6 +91,7 @@ export default function ProfilePage() {
   const sections = [
     { id: "stats", label: "📊 Statistics", icon: "📊" },
     { id: "vault", label: "🏆 Achievement Vault", icon: "🏆" },
+    { id: "guide", label: "📖 How It Works", icon: "📖" },
     { id: "redeem", label: "🎟️ Redeem Code", icon: "🎟️" },
     { id: "premium", label: "👑 Premium", icon: "👑" },
     { id: "wishlist", label: "💝 Wishlist", icon: "💝" },
