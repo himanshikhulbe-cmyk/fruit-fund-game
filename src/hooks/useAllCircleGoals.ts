@@ -13,9 +13,13 @@ export function useAllCircleGoals() {
   return useQuery({
     queryKey: ["all-circle-goals", user?.id],
     queryFn: async () => {
-      // Get user's circle IDs
-      const { data: circleIds } = await supabase.rpc("get_user_circle_ids", { _user_id: user!.id });
-      if (!circleIds || circleIds.length === 0) return [];
+      // Get user's circle IDs (RLS restricts rows to the current user's memberships)
+      const { data: memberships } = await supabase
+        .from("circle_members")
+        .select("circle_id")
+        .eq("user_id", user!.id);
+      const circleIds = (memberships ?? []).map((m) => m.circle_id);
+      if (circleIds.length === 0) return [];
 
       // Get circles info
       const { data: circles } = await supabase
