@@ -135,11 +135,15 @@ export function useJoinCircle() {
       
       const circle = circles[0];
 
-      // Check if already a member using security definer
-      const { data: isMember } = await supabase
-        .rpc("is_circle_member", { _circle_id: circle.id, _user_id: user!.id });
-      
-      if (isMember) throw new Error("You're already a member of this circle");
+      // Check if already a member
+      const { data: existingMembership } = await supabase
+        .from("circle_members")
+        .select("id")
+        .eq("circle_id", circle.id)
+        .eq("user_id", user!.id)
+        .maybeSingle();
+
+      if (existingMembership) throw new Error("You're already a member of this circle");
 
       // Join
       const { error } = await supabase.from("circle_members").insert({
