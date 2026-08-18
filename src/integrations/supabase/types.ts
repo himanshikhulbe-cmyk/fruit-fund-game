@@ -524,11 +524,7 @@ export type Database = {
           name: string
         }[]
       }
-      get_user_circle_ids: { Args: { _user_id: string }; Returns: string[] }
-      is_circle_member: {
-        Args: { _circle_id: string; _user_id: string }
-        Returns: boolean
-      }
+      safe_uuid: { Args: { _txt: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
